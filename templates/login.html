@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Login') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    body {
+        position: relative;
+        background: var(--ramadan-dark);
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 0.2;
+        z-index: 1;
+    }
+
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 2;
+        background: transparent;
+    }
+
+    .auth-page .container {
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-content {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1rem;
+        padding: 3rem;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .auth-header h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+    }
+
+    .auth-header p {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        color: var(--ramadan-gold);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: var(--ramadan-gold);
+        opacity: 0.6;
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--ramadan-gold);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .toggle-password:hover {
+        color: var(--ramadan-gold-light);
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        color: var(--ramadan-gold);
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 1rem;
+        gap: 0.8rem;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        position: relative;
+        margin: 0;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-label input[type="checkbox"]:checked {
+        background: var(--ramadan-gold);
+        border-color: var(--ramadan-gold);
+    }
+
+    .checkbox-label input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        color: var(--ramadan-dark);
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .checkbox-label input[type="checkbox"]:hover {
+        border-color: var(--ramadan-gold-light);
+        background: rgba(198, 166, 100, 0.1);
+    }
+
+    .checkbox-label span {
+        color: var(--ramadan-gold);
+        line-height: 1.5;
+    }
+
+    .forgot-password {
+        color: var(--ramadan-gold);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .forgot-password:hover {
+        color: var(--ramadan-gold-light);
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .btn {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+    }
+
+    .btn-primary:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                    0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .auth-divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: var(--ramadan-gold);
+        opacity: 0.3;
+    }
+
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    .auth-divider span {
+        background: transparent;
+        padding: 0 1rem;
+        color: var(--ramadan-gold);
+        font-size: 0.9rem;
+    }
+
+    .social-login {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-social:hover {
+        background: rgba(198, 166, 100, 0.1);
+        border-color: var(--ramadan-gold-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .btn-social i {
+        font-size: 1.2rem;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .auth-page {
+            padding: 2rem 1rem;
+        }
+
+        .auth-content {
+            padding: 2rem;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    [dir="rtl"] .auth-content {
+        text-align: right;
+    }
+
+    [dir="rtl"] .toggle-password {
+        right: auto;
+        left: 1rem;
+    }
+
+    [dir="rtl"] .checkbox-label {
+        flex-direction: row-reverse;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h1>{{ translate('Welcome Back') }}</h1>
+                <p>{{ translate('Sign in to your PureLuxe account') }}</p>
+            </div>
+            <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="email">{{ translate('Email Address') }}</label>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="{{ translate('Enter your email') }}">
+                </div>
+                <div class="form-group">
+                    <label for="password">{{ translate('Password') }}</label>
+                    <div class="password-input">
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="{{ translate('Enter your password') }}">
+                        <button type="button" class="toggle-password" aria-label="{{ translate('Toggle password visibility') }}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember">
+                        <span>{{ translate('Remember me') }}</span>
+                    </label>
+                    <a href="{{ url_for('forgot_password') }}" class="forgot-password">{{ translate('Forgot Password?') }}</a>
+                </div>
+                <button type="submit" class="btn btn-primary">{{ translate('Sign In') }}</button>
+                <div class="auth-divider">
+                    <span>{{ translate('or continue with') }}</span>
+                </div>
+                <div class="social-login">
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-google"></i>
+                        {{ translate('Continue with Google') }}
+                    </button>
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-facebook"></i>
+                        {{ translate('Continue with Facebook') }}
+                    </button>
+                </div>
+                <p class="text-center" style="color: var(--ramadan-gold); margin-top: 1rem;">
+                    {{ translate('Don\'t have an account?') }}
+                    <a href="{{ url_for('register') }}" style="color: var(--ramadan-gold-light); text-decoration: none; margin-left: 0.5rem;">
+                        {{ translate('Sign Up') }}
+                    </a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.querySelector('#password');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    }
+</script>
+{% endblock %} 

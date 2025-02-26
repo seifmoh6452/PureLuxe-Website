@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <circle cx="30" cy="30" r="30" fill="#F7FAFC"/>
+    
+    <!-- Elegant Pattern -->
+    <path d="M0 30 C12 38, 48 38, 60 30" fill="none" stroke="#E2E8F0" stroke-width="0.5"/>
+    <path d="M0 26 C12 34, 48 34, 60 26" fill="none" stroke="#E2E8F0" stroke-width="0.5"/>
+    <path d="M0 34 C12 42, 48 42, 60 34" fill="none" stroke="#E2E8F0" stroke-width="0.5"/>
+    
+    <!-- Professional Silhouette -->
+    <circle cx="30" cy="22" r="10" fill="#2C5282"/>
+    <path d="M18 56 C18 36 42 36 42 56" fill="#2C5282"/>
+    
+    <!-- Hair Detail -->
+    <path d="M20 18 C20 14 40 14 40 18" fill="#2C5282"/>
+    <path d="M18 18 C18 26 42 26 42 18" fill="#2C5282"/>
+    <path d="M40 18 C42 22 42 26 40 30" fill="#2C5282"/>
+    
+    <!-- Professional Attire -->
+    <path d="M20 38 L30 42 L40 38" fill="none" stroke="#4299E1" stroke-width="0.5"/>
+    
+    <!-- Earring Detail -->
+    <circle cx="40" cy="24" r="1" fill="#63B3ED"/>
+    
+    <!-- Necklace Detail -->
+    <path d="M28 38 C30 40 32 40 34 38" fill="none" stroke="#63B3ED" stroke-width="0.5"/>
+</svg> 

@@ -1,0 +1,563 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Contact Us - PureLuxe') }}{% endblock %}
+
+{% block content %}
+<section class="contact-hero">
+    <div class="container">
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">{{ translate('Get in Touch') }}</h1>
+            <p class="hero-subtitle">{{ translate('We\'d love to hear from you. Our team is always here to help.') }}</p>
+            <div class="hero-description fade-in">
+                <p>{{ translate('Experience exceptional customer service with PureLuxe. Whether you have questions about our products, need assistance with an order, or want to learn more about our natural ingredients, our dedicated team is ready to assist you.') }}</p>
+                <div class="hero-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ translate('24/7 Customer Support') }}</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-reply"></i>
+                        <span>{{ translate('Fast Response Time') }}</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-heart"></i>
+                        <span>{{ translate('Dedicated Care Team') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <!-- Contact Information -->
+            <div class="contact-info fade-in">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>{{ translate('Visit Us') }}</h3>
+                    <p>123 Eco Street</p>
+                    <p>Green City, GC 12345</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>{{ translate('Call Us') }}</h3>
+                    <p>+20 1000041073</p>
+                    <p>{{ translate('Mon-Fri: 9AM-6PM') }}</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>{{ translate('Email Us') }}</h3>
+                    <p>support@pureluxe.com</p>
+                    <p>{{ translate('We\'ll respond within 24 hours') }}</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>{{ translate('Follow Us') }}</h3>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-container fade-in">
+                <h2 class="form-title">{{ translate('Send Us a Message') }}</h2>
+                <p class="form-subtitle">{{ translate('Fill out the form below and we\'ll get back to you as soon as possible.') }}</p>
+                <form class="contact-form" method="POST" action="{{ url_for('contact') }}">
+                    <div class="form-group">
+                        <label for="name">{{ translate('Your Name') }}</label>
+                        <input type="text" id="name" name="name" required class="form-input" placeholder="{{ translate('Enter your full name') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">{{ translate('Your Email') }}</label>
+                        <input type="email" id="email" name="email" required class="form-input" placeholder="{{ translate('Enter your email address') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">{{ translate('Subject') }}</label>
+                        <input type="text" id="subject" name="subject" required class="form-input" placeholder="{{ translate('What is your message about?') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">{{ translate('Message') }}</label>
+                        <textarea id="message" name="message" rows="6" required class="form-input" placeholder="{{ translate('Type your message here...') }}"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-paper-plane"></i>
+                        {{ translate('Send Message') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title text-center">{{ translate('Common Questions') }}</h2>
+        <div class="faq-grid">
+            <div class="faq-item fade-in">
+                <h3>{{ translate('What are your shipping times?') }}</h3>
+                <p>{{ translate('We typically process orders within 1-2 business days. Shipping times vary by location, usually 3-5 business days domestically.') }}</p>
+            </div>
+            <div class="faq-item fade-in">
+                <h3>{{ translate('Do you offer international shipping?') }}</h3>
+                <p>{{ translate('Yes, we ship to most countries worldwide. International shipping times typically range from 7-14 business days.') }}</p>
+            </div>
+            <div class="faq-item fade-in">
+                <h3>{{ translate('What is your return policy?') }}</h3>
+                <p>{{ translate('We offer a 30-day satisfaction guarantee. If you\'re not completely satisfied, you can return unused products for a full refund.') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    body {
+        position: relative;
+        background: var(--ramadan-dark);
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-hero {
+        position: relative;
+        padding: 8rem 0 4rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 0.15;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 4rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--ramadan-gold);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    .contact-section {
+        position: relative;
+        z-index: 2;
+        padding: 4rem 0;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    .contact-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .info-card {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid var(--ramadan-gold);
+        backdrop-filter: blur(5px);
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+                    0 0 15px rgba(198, 166, 100, 0.2);
+        border-color: var(--ramadan-gold-light);
+    }
+
+    .info-icon {
+        font-size: 1.2rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .info-icon i {
+        font-size: 1.2rem;
+        color: var(--ramadan-gold);
+    }
+
+    .info-card h3 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--ramadan-gold);
+    }
+
+    .info-card p {
+        color: var(--ramadan-gold);
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .contact-form-container {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 3rem;
+        border-radius: 1rem;
+        border: 2px solid var(--ramadan-gold);
+        backdrop-filter: blur(5px);
+    }
+
+    .form-title {
+        font-size: 2rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight: 600;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .form-subtitle {
+        color: var(--ramadan-gold);
+        text-align: center;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--ramadan-gold);
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--ramadan-gold);
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+        border-color: var(--ramadan-gold-light);
+        outline: none;
+        box-shadow: 0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .form-input::placeholder {
+        color: var(--ramadan-gold);
+        opacity: 0.6;
+    }
+
+    .btn-full {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--ramadan-gold);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-full:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                    0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+    .social-links a {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        opacity: 0.9;
+        transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+        opacity: 1;
+        color: var(--ramadan-gold-light);
+        transform: translateY(-2px);
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .faq-section {
+        position: relative;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 4rem 0;
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+        border-top: 2px solid var(--ramadan-gold);
+    }
+
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: var(--ramadan-gold);
+        text-align: center;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        background: rgba(0, 0, 0, 0.6);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 2px solid var(--ramadan-gold);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .faq-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+                    0 0 15px rgba(198, 166, 100, 0.2);
+        border-color: var(--ramadan-gold-light);
+    }
+
+    .faq-item h3 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--ramadan-gold);
+    }
+
+    .faq-item p {
+        color: var(--ramadan-gold);
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @media (max-width: 992px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-info {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .container {
+            padding: 0 1rem;
+        }
+    }
+
+    [dir="rtl"] .contact-grid {
+        direction: rtl;
+    }
+
+    [dir="rtl"] .form-group label {
+        text-align: right;
+    }
+
+    [dir="rtl"] .info-card,
+    [dir="rtl"] .faq-item {
+        text-align: right;
+    }
+
+    .hero-description {
+        max-width: 800px;
+        margin: 2rem auto 0;
+        color: var(--ramadan-gold);
+        opacity: 0.9;
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    .hero-highlights {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-top: 2rem;
+    }
+
+    .highlight-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 1rem;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+
+    .highlight-item:hover {
+        transform: translateY(-2px);
+        background: rgba(0, 0, 0, 0.6);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 5px 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .highlight-item i {
+        font-size: 1.2rem;
+        color: var(--ramadan-gold);
+    }
+
+    @media (max-width: 768px) {
+        .hero-highlights {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        .highlight-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .hero-description {
+            padding: 0 1rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation and submission handling
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ translate("Sending...") }}';
+        });
+    }
+
+    // Fade-in animation for elements
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    fadeElements.forEach(element => observer.observe(element));
+</script>
+{% endblock %} 

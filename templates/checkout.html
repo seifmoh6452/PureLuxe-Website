@@ -1,0 +1,729 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Checkout') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    .checkout-page {
+        min-height: 100vh;
+        padding: 8rem 0 4rem;
+        position: relative;
+        color: var(--ramadan-gold);
+        background: transparent;
+    }
+
+    .checkout-page::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 0.15;
+        z-index: -1;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .checkout-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .checkout-steps {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--ramadan-gold);
+        opacity: 0.6;
+    }
+
+    .step.active {
+        opacity: 1;
+        color: var(--ramadan-gold);
+    }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(198, 166, 100, 0.1);
+        border: 1px solid var(--ramadan-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    .step.active .step-number {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+    }
+
+    .checkout-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .checkout-main {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1.5rem;
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .form-section h2 {
+        font-size: 1.5rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.75rem;
+        color: var(--ramadan-gold);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: rgba(198, 166, 100, 0.5);
+    }
+
+    select.form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C6A664' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+        padding-right: 2.5rem;
+    }
+
+    select.form-control option {
+        background-color: var(--ramadan-dark);
+        color: var(--ramadan-gold);
+        padding: 1rem;
+    }
+
+    .shipping-options {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .shipping-option {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .shipping-option:hover {
+        background: rgba(198, 166, 100, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .option-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .option-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .option-name {
+        color: var(--ramadan-gold);
+        font-weight: 600;
+    }
+
+    .option-description {
+        font-size: 0.9rem;
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+    }
+
+    .option-price {
+        color: var(--ramadan-gold);
+        font-weight: 600;
+    }
+
+    .payment-method {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+    }
+
+    .payment-option {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--ramadan-gold);
+    }
+
+    .payment-description {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+    }
+
+    .order-summary {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .order-summary h2 {
+        font-size: 1.5rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .summary-items {
+        margin-bottom: 2rem;
+    }
+
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .item-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-info h3 {
+        font-size: 0.9rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.25rem;
+    }
+
+    .item-size {
+        font-size: 0.8rem;
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+    }
+
+    .item-price {
+        color: var(--ramadan-gold);
+        font-weight: 600;
+    }
+
+    .summary-subtotal,
+    .summary-shipping,
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        color: var(--ramadan-gold);
+    }
+
+    .summary-total {
+        border-top: 1px solid rgba(198, 166, 100, 0.3);
+        margin-top: 1rem;
+        padding-top: 1rem;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .form-actions .btn {
+        flex: 1;
+    }
+
+    .btn {
+        padding: 1.2rem 2.5rem;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-primary {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        border: none;
+        box-shadow: 0 10px 20px rgba(212, 175, 55, 0.15);
+    }
+
+    .btn-primary:hover {
+        background: var(--ramadan-gold-light);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+    }
+
+    .btn-outline:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(212, 175, 55, 0.15);
+    }
+
+    @media (max-width: 1024px) {
+        .checkout-content {
+            grid-template-columns: 1fr;
+        }
+
+        .order-summary {
+            position: static;
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-page {
+            padding: 6rem 1rem 2rem;
+        }
+
+        .checkout-header h1 {
+            font-size: 2rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.9);
+        border: 1px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+        z-index: 1000;
+        animation: slideIn 0.3s ease forwards;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-danger {
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+
+    .alert .close {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="checkout-page">
+    <div class="container">
+        <div class="checkout-header">
+            <h1>{{ translate('Checkout') }}</h1>
+            <div class="checkout-steps">
+                <div class="step active">
+                    <span class="step-number">1</span>
+                    <span class="step-label">{{ translate('Shipping') }}</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-label">{{ translate('Confirmation') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-content">
+            <div class="checkout-main">
+                <form id="checkout-form" class="shipping-form" method="POST" action="{{ url_for('checkout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-section">
+                        <h2>{{ translate('Contact Information') }}</h2>
+                        <div class="form-group">
+                            <label for="email">{{ translate('Email Address') }}</label>
+                            <input type="email" id="email" name="email" required 
+                                   value="{{ current_user.email if current_user.is_authenticated else '' }}"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">{{ translate('Phone Number') }}</label>
+                            <input type="tel" id="phone" name="phone" required 
+                                   minlength="11" maxlength="15"
+                                   placeholder="e.g., 01234567890" 
+                                   class="form-control">
+                            <small class="form-text text-muted">{{ translate('Enter your phone number without spaces or dashes') }}</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>{{ translate('Shipping Address') }}</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">{{ translate('First Name') }}</label>
+                                <input type="text" id="firstName" name="firstName" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">{{ translate('Last Name') }}</label>
+                                <input type="text" id="lastName" name="lastName" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">{{ translate('Street Address') }}</label>
+                            <input type="text" id="address" name="address" required class="form-control"
+                                   placeholder="{{ translate('Building number, street name, district') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="apartment">{{ translate('Apartment/Suite/Floor') }}</label>
+                            <input type="text" id="apartment" name="apartment" class="form-control"
+                                   placeholder="{{ translate('Apartment number, floor, etc. (optional)') }}">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">{{ translate('City') }}</label>
+                                <select id="city" name="city" required class="form-control">
+                                    <option value="">{{ translate('Select City') }}</option>
+                                    {% for city in ['Cairo', 'Alexandria', 'Giza', 'Shubra El Kheima', 'Port Said', 'Suez', 'Luxor', 'Mansoura', 'El-Mahalla El-Kubra', 'Tanta', 'Asyut', 'Ismailia', 'Fayyum', 'Zagazig', 'Aswan', 'Damietta', 'Damanhur', 'Minya', 'Beni Suef', 'Hurghada', 'Qena', 'Sohag', 'Shibin El Kom', 'Banha', 'Arish'] %}
+                                    <option value="{{ city }}">{{ translate(city) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="landmark">{{ translate('Nearby Landmark') }}</label>
+                            <input type="text" id="landmark" name="landmark" class="form-control"
+                                   placeholder="{{ translate('e.g., Near mosque, school, or market (optional)') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>{{ translate('Shipping Method') }}</h2>
+                        <div class="shipping-options">
+                            <label class="shipping-option">
+                                <input type="radio" name="shipping" value="standard" checked>
+                                <div class="option-content">
+                                    <div class="option-info">
+                                        <span class="option-name">{{ translate('Standard Shipping') }}</span>
+                                        <span class="option-description">{{ translate('2-3 business days') }}</span>
+                                    </div>
+                                    <span class="option-price">{% if total >= 1000 %}{{ translate('Free') }}{% else %}EGP 50.00{% endif %}</span>
+                                </div>
+                            </label>
+                            <label class="shipping-option">
+                                <input type="radio" name="shipping" value="express">
+                                <div class="option-content">
+                                    <div class="option-info">
+                                        <span class="option-name">{{ translate('Express Shipping') }}</span>
+                                        <span class="option-description">{{ translate('Same day delivery') }}</span>
+                                    </div>
+                                    <span class="option-price">EGP 70.00</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>{{ translate('Payment Method') }}</h2>
+                        <div class="payment-method">
+                            <div class="payment-option">
+                                <input type="radio" id="cod" name="payment" value="cod" checked>
+                                <label for="cod">{{ translate('Cash on Delivery') }}</label>
+                                <p class="payment-description">{{ translate('Pay with cash when your order is delivered') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large btn-block">
+                            {{ translate('Place Order') }}
+                        </button>
+                        <a href="{{ url_for('cart') }}" class="btn btn-outline btn-block">
+                            {{ translate('Return to Cart') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="checkout-sidebar">
+                <div class="order-summary">
+                    <h2>{{ translate('Order Summary') }}</h2>
+                    <div class="summary-items">
+                        {% for item in cart_items %}
+                        <div class="summary-item">
+                            <div class="item-image">
+                                <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" 
+                                     alt="{{ item.name }}">
+                                <span class="item-quantity">{{ item.quantity }}</span>
+                            </div>
+                            <div class="item-info">
+                                <h3>{{ item.name }}</h3>
+                                <span class="item-size">{{ item.size }}</span>
+                            </div>
+                            <span class="item-price">{{ "%.2f"|format(item.subtotal) }} {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="summary-subtotal">
+                        <span>{{ translate('Subtotal') }}</span>
+                        <span>{{ "%.2f"|format(total) }} {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}</span>
+                    </div>
+                    <div class="summary-shipping">
+                        <span>{{ translate('Shipping') }}</span>
+                        <span>{% if total >= 1000 %}{{ translate('Free') }}{% else %}50.00 {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}{% endif %}</span>
+                    </div>
+                    {% if total >= 1000 %}
+                    <div class="summary-discount">
+                        <span>{{ translate('Free Shipping Applied') }}</span>
+                        <span>-50.00 {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="summary-total">
+                        <span>{{ translate('Total') }}</span>
+                        <span class="total-amount">{{ "%.2f"|format(total + (0 if total >= 1000 else 50)) }} {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkoutForm = document.getElementById('checkout-form');
+        const submitButton = checkoutForm.querySelector('button[type="submit"]');
+        
+        // Form submission handler
+        checkoutForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Disable submit button and show loading state
+            submitButton.disabled = true;
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ translate("Processing...") }}';
+            
+            try {
+                // Validate required fields
+                const requiredFields = ['email', 'phone', 'firstName', 'lastName', 'address', 'city'];
+                for (const field of requiredFields) {
+                    const input = document.getElementById(field);
+                    if (!input.value.trim()) {
+                        throw new Error(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                    }
+                }
+
+                // Validate phone number
+                const phone = document.getElementById('phone').value.trim();
+                if (phone.length < 11) {
+                    throw new Error('Phone number must be at least 11 digits');
+                }
+
+                // Collect form data
+                const formData = new FormData(checkoutForm);
+                
+                // Send form data to server
+                const response = await fetch('{{ url_for("checkout") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                    }
+                });
+            
+                const result = await response.json();
+            
+                if (result.status === 'success') {
+                    window.location.href = result.redirect_url;
+                } else {
+                    throw new Error(result.error || 'Failed to process order');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                // Show error message in a more user-friendly way
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'alert alert-danger';
+                errorMessage.innerHTML = `
+                    <strong>{{ translate("Error") }}:</strong> ${error.message}
+                    <button type="button" class="close" onclick="this.parentElement.remove()">
+                        <span>&times;</span>
+                    </button>
+                `;
+                checkoutForm.insertBefore(errorMessage, checkoutForm.firstChild);
+                
+                // Scroll to error message
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Restore submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+            }
+        });
+
+        // Phone number validation
+        document.getElementById('phone').addEventListener('input', function(e) {
+            // Remove any non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+        });
+    
+        // Update shipping cost when method changes
+        const shippingElement = document.querySelector('.summary-shipping span:last-child');
+        const totalElement = document.querySelector('.total-amount');
+        const shippingOptions = document.querySelectorAll('input[name="shipping"]');
+        const subtotal = {{ total }};
+        
+        shippingOptions.forEach(function(option) {
+            option.addEventListener('change', function() {
+                const shippingCost = this.value === 'express' ? 70 : (subtotal >= 1000 ? 0 : 50);
+                const total = subtotal + shippingCost;
+            
+                if (shippingElement) {
+                    shippingElement.textContent = shippingCost === 0 ? 
+                        '{{ translate("Free") }}' : 
+                        `${shippingCost.toFixed(2)} {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}`;
+                }
+                
+                if (totalElement) {
+                    totalElement.textContent = `${total.toFixed(2)} {{ 'ج.م' if g.lang == 'ar' else 'EGP' }}`;
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

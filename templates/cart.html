@@ -1,0 +1,648 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Shopping Cart') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+.item-image {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.cart-item:hover .item-image img {
+    transform: scale(1.1);
+}
+
+.cart-page {
+    padding: 8rem 0 4rem;
+    background: transparent;
+    min-height: 100vh;
+    color: var(--ramadan-gold);
+    position: relative;
+}
+
+.cart-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    opacity: 1;
+    mix-blend-mode: normal;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.cart-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.cart-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+    text-shadow: none;
+}
+
+.cart-count {
+    font-size: 1.1rem;
+    color: var(--ramadan-gold);
+    opacity: 0.9;
+}
+
+.cart-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.cart-items {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--ramadan-gold);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    backdrop-filter: blur(5px);
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(198, 166, 100, 0.3);
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.item-details h3 {
+    font-size: 1.2rem;
+    color: var(--ramadan-gold);
+    margin-bottom: 0.5rem;
+}
+
+.item-meta {
+    display: flex;
+    gap: 1rem;
+    color: var(--ramadan-gold);
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--ramadan-gold);
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+    width: fit-content;
+}
+
+.quantity-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--ramadan-gold);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background: var(--ramadan-gold);
+    color: var(--ramadan-dark);
+}
+
+.quantity-input {
+    width: 3rem;
+    height: 2rem;
+    text-align: center;
+    border: none;
+    background: transparent;
+    color: var(--ramadan-gold);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.item-subtotal {
+    text-align: right;
+    color: var(--ramadan-gold);
+}
+
+.subtotal-label {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
+}
+
+.subtotal-amount {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.remove-item-btn {
+    color: var(--ramadan-gold);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.remove-item-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.cart-summary {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--ramadan-gold);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    height: fit-content;
+    backdrop-filter: blur(5px);
+}
+
+.cart-summary h2 {
+    font-size: 1.5rem;
+    color: var(--ramadan-gold);
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+}
+
+.summary-items {
+    margin-bottom: 2rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    color: var(--ramadan-gold);
+    opacity: 0.9;
+}
+
+.summary-item.discount {
+    color: var(--ramadan-gold);
+    opacity: 1;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(198, 166, 100, 0.3);
+    color: var(--ramadan-gold);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.summary-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.summary-actions .btn {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.summary-actions .btn-primary {
+    background: linear-gradient(135deg, var(--ramadan-gold), var(--ramadan-gold-light));
+    color: var(--ramadan-dark);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--ramadan-gold-light), var(--ramadan-gold));
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+}
+
+.summary-actions .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.summary-actions .btn-primary:hover::before {
+    left: 100%;
+}
+
+.summary-actions .btn-outline {
+    background: transparent;
+    border: 2px solid var(--ramadan-gold);
+    color: var(--ramadan-gold);
+}
+
+.summary-actions .btn-outline:hover {
+    background: var(--ramadan-gold);
+    color: var(--ramadan-dark);
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 4rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--ramadan-gold);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(5px);
+}
+
+.empty-cart i {
+    font-size: 4rem;
+    color: var(--ramadan-gold);
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.empty-cart h2 {
+    font-size: 2.5rem;
+    color: var(--ramadan-gold);
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.empty-cart p {
+    color: var(--ramadan-gold);
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.empty-cart .btn-primary {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--ramadan-gold);
+    color: var(--ramadan-dark);
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.empty-cart .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(198, 166, 100, 0.2);
+}
+
+@media (max-width: 1024px) {
+    .cart-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .cart-summary {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .item-image {
+        margin: 0 auto;
+    }
+    
+    .item-meta {
+        justify-content: center;
+    }
+    
+    .quantity-selector {
+        margin: 0 auto;
+    }
+    
+    .item-subtotal {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-header h1 {
+        font-size: 2rem;
+    }
+    
+    .cart-items,
+    .cart-summary {
+        padding: 1.5rem;
+    }
+
+    .summary-actions {
+        flex-direction: column;
+    }
+}
+
+.alert {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--ramadan-gold);
+    color: var(--ramadan-gold);
+}
+
+.alert-success {
+    background: rgba(46, 204, 113, 0.9);
+    border-color: var(--ramadan-gold);
+}
+
+.alert-error {
+    background: rgba(231, 76, 60, 0.9);
+    border-color: var(--ramadan-gold);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="cart-page">
+    <div class="container">
+        <div class="cart-header">
+            <h1>{{ translate('Shopping Cart') }}</h1>
+            <span class="cart-count">{{ cart_items|length }} {{ translate('items') }}</span>
+        </div>
+
+        {% if cart_items %}
+        <div class="cart-content">
+            <div class="cart-items">
+                {% for item in cart_items %}
+                <div class="cart-item" data-product-id="{{ item.id }}">
+                    <div class="item-image">
+                        <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" 
+                             alt="{{ translate(item.name) }}">
+                    </div>
+                    <div class="item-details">
+                        <h3>{{ translate(item.name) }}</h3>
+                        <div class="item-meta">
+                            <span class="item-size">{{ translate(item.size) }}</span>
+                            <span class="item-price">{{ "%.2f"|format(item.price) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                        </div>
+                        <form class="cart-update-form" action="{{ url_for('update_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ item.id }}">
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn quantity-minus" aria-label="{{ translate('Decrease quantity') }}">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                       min="1" class="quantity-input" required aria-label="{{ translate('Quantity') }}">
+                                <button type="button" class="quantity-btn quantity-plus" aria-label="{{ translate('Increase quantity') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="item-subtotal">
+                        <span class="subtotal-label">{{ translate('Subtotal') }}</span>
+                        <span class="subtotal-amount">{{ "%.2f"|format(item.subtotal) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                    </div>
+                    <form class="remove-item-form" action="{{ url_for('update_cart') }}" method="POST">
+                        <input type="hidden" name="product_id" value="{{ item.id }}">
+                        <input type="hidden" name="quantity" value="0">
+                        <button type="submit" class="btn btn-icon remove-item-btn" aria-label="{{ translate('Remove item') }}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <h2>{{ translate('Order Summary') }}</h2>
+                <div class="summary-items">
+                    <div class="summary-item">
+                        <span>{{ translate('Subtotal') }}</span>
+                        <span class="cart-total">{{ "%.2f"|format(total) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>{{ translate('Shipping') }}</span>
+                        <span class="shipping-cost">{% if total >= 1000 %}{{ translate('Free') }}{% else %}50.00 {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}{% endif %}</span>
+                    </div>
+                    {% if total >= 1000 %}
+                    <div class="summary-item discount">
+                        <span>{{ translate('Free Shipping Applied') }}</span>
+                        <span>-50.00 {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="summary-total">
+                    <span>{{ translate('Total') }}</span>
+                    <span class="final-total">{{ "%.2f"|format(total + (0 if total >= 1000 else 50)) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                </div>
+                <div class="summary-actions">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-large btn-block">
+                        {{ translate('Proceed to Checkout') }}
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}?next={{ url_for('checkout') }}" class="btn btn-primary btn-large btn-block">
+                        {{ translate('Login to Checkout') }}
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('shop') }}" class="btn btn-outline btn-block">
+                        {{ translate('Continue Shopping') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-cart">
+            <div class="empty-cart-content">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>{{ translate('Your cart is empty') }}</h2>
+                <p>{{ translate('Looks like you haven\'t added anything to your cart yet.') }}</p>
+                <a href="{{ url_for('shop') }}" class="btn btn-primary">{{ translate('Start Shopping') }}</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle quantity changes
+    document.querySelectorAll('.quantity-selector').forEach(selector => {
+        const input = selector.querySelector('.quantity-input');
+        const minusBtn = selector.querySelector('.quantity-minus');
+        const plusBtn = selector.querySelector('.quantity-plus');
+        
+        if (input && minusBtn && plusBtn) {
+            minusBtn.addEventListener('click', () => {
+                const currentValue = parseInt(input.value);
+                if (currentValue > 1) {
+                    input.value = currentValue - 1;
+                    const form = selector.closest('form');
+                    if (form) {
+                        form.dispatchEvent(new Event('submit'));
+                    }
+                }
+            });
+            
+            plusBtn.addEventListener('click', () => {
+                const currentValue = parseInt(input.value);
+                input.value = currentValue + 1;
+                const form = selector.closest('form');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+            
+            input.addEventListener('change', () => {
+                let value = parseInt(input.value);
+                if (value < 1) {
+                    value = 1;
+                }
+                input.value = value;
+                const form = selector.closest('form');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+        }
+    });
+
+    // Handle cart update form submissions
+    document.querySelectorAll('.cart-update-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+            
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('{{ translate("Failed to update cart") }}');
+                }
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update cart count in header
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.cart_count;
+                    }
+                    
+                    // Update cart total
+                    const cartTotal = document.querySelector('.cart-total');
+                    if (cartTotal && data.cart_total) {
+                        cartTotal.textContent = `${data.cart_total.toFixed(2)} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}`;
+                    }
+                    
+                    // Update shipping cost and final total
+                    const shippingCost = data.cart_total >= 1000 ? 0 : 50;
+                    const shippingElement = document.querySelector('.shipping-cost');
+                    if (shippingElement) {
+                        shippingElement.textContent = shippingCost === 0 ? 
+                            '{{ translate("Free") }}' : 
+                            `${shippingCost.toFixed(2)} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}`;
+                    }
+                    
+                    const finalTotal = document.querySelector('.final-total');
+                    if (finalTotal) {
+                        finalTotal.textContent = `${(data.cart_total + shippingCost).toFixed(2)} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}`;
+                    }
+
+                    // Update item subtotal
+                    const quantity = parseInt(formData.get('quantity'));
+                    const cartItem = form.closest('.cart-item');
+                    if (cartItem) {
+                        const subtotalElement = cartItem.querySelector('.subtotal-amount');
+                        const priceElement = cartItem.querySelector('.item-price');
+                        if (subtotalElement && priceElement) {
+                            const price = parseFloat(priceElement.textContent.replace(/[^\d.]/g, ''));
+                            subtotalElement.textContent = `${(price * quantity).toFixed(2)} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}`;
+                        }
+                    }
+
+                    // Show success notification
+                    showNotification('{{ translate("Cart updated successfully") }}', 'success');
+                } else {
+                    throw new Error(data.message || '{{ translate("Failed to update cart") }}');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification(error.message, 'error');
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 
