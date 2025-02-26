@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <circle cx="75" cy="75" r="75" fill="#E6F0FF"/>
+    
+    <!-- Head -->
+    <circle cx="75" cy="60" r="30" fill="#4A5568"/>
+    
+    <!-- Body -->
+    <path d="M45 140 C45 100 105 100 105 140" fill="#4A5568"/>
+    
+    <!-- Hair -->
+    <path d="M45 60 C45 40 105 40 105 60" fill="#2D3748"/>
+    
+    <!-- Glasses -->
+    <rect x="55" y="55" width="40" height="10" rx="5" fill="none" stroke="#718096" stroke-width="2"/>
+    
+    <!-- Smile -->
+    <path d="M65 70 C65 75 85 75 85 70" fill="none" stroke="#718096" stroke-width="2"/>
+</svg> 

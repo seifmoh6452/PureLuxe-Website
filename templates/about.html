@@ -1,0 +1,1416 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    /* Add pattern to body */
+    body {
+        position: relative;
+        background: var(--ramadan-dark);
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}") repeat;
+        background-size: cover;
+        background-position: center;
+        opacity: 1;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .about-hero,
+    .about-mission,
+    .about-journey,
+    .about-team,
+    .about-values {
+        position: relative;
+        z-index: 1;
+        background: transparent;
+    }
+
+    .about-hero::before,
+    .about-mission::before,
+    .about-journey::before,
+    .about-team::before,
+    .about-values::before {
+        display: none;
+    }
+
+    .about-hero {
+        padding: 160px 0 80px;
+        position: relative;
+        z-index: 1;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .about-header {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-header h1 {
+        font-family: 'Poppins', sans-serif;
+        color: var(--ramadan-gold);
+        font-size: 4.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+        letter-spacing: 0.02em;
+        text-transform: capitalize;
+        position: relative;
+        padding-bottom: 30px;
+        transition: all 0.3s ease;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+        text-align: center;
+        width: 100%;
+    }
+
+    .about-header h1:hover {
+        transform: scale(1.02);
+    }
+
+    .about-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 2px;
+        background: linear-gradient(to right, 
+            transparent,
+            rgba(198, 166, 100, 0.2) 20%,
+            rgba(198, 166, 100, 0.8) 50%,
+            rgba(198, 166, 100, 0.2) 80%,
+            transparent
+        );
+    }
+
+    .about-subtitle {
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-size: 1.6rem;
+        color: var(--ramadan-gold);
+        max-width: 800px;
+        margin: 30px auto 0;
+        line-height: 1.6;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        transition: all 0.3s ease;
+        padding: 1.5rem;
+        border-radius: 15px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+        text-align: center;
+        background: linear-gradient(45deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+        border: 1px solid var(--ramadan-gold);
+        box-shadow: 0 4px 15px rgba(198, 166, 100, 0.1);
+    }
+
+    .about-subtitle:hover {
+        color: var(--ramadan-gold-light);
+        background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8));
+        transform: scale(1.02) translateY(-5px);
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 8px 25px rgba(198, 166, 100, 0.15);
+    }
+
+    .about-mission::before,
+    .about-journey::before,
+    .about-team::before,
+    .about-values::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(to right, 
+            transparent,
+            rgba(198, 166, 100, 0.2) 20%,
+            rgba(198, 166, 100, 0.8) 50%,
+            rgba(198, 166, 100, 0.2) 80%,
+            transparent
+        );
+    }
+
+    .about-mission {
+        text-align: center;
+        padding: 120px 0;
+        position: relative;
+        background: transparent;
+    }
+
+    .about-mission::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .about-mission .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .mission-text {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .mission-text h2 {
+        color: var(--ramadan-gold);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-shadow: 0 4px 15px rgba(198, 166, 100, 0.3);
+        position: relative;
+        padding-bottom: 30px;
+        display: block;
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient 3s ease infinite;
+    }
+
+    .mission-text h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(to right, 
+            transparent,
+            var(--ramadan-gold) 20%,
+            var(--ramadan-gold-light) 50%,
+            var(--ramadan-gold) 80%,
+            transparent
+        );
+        box-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .mission-text > p {
+        color: var(--ramadan-gold);
+        font-size: 1.4rem;
+        line-height: 1.8;
+        max-width: 800px;
+        margin: 0 auto 4rem;
+        padding: 2rem;
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid var(--ramadan-gold);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.4s ease;
+    }
+
+    .mission-text > p:hover {
+        transform: translateY(-5px);
+        background: rgba(0, 0, 0, 0.7);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .mission-values {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        margin-top: 4rem;
+    }
+
+    .value-item {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 25px;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .value-item:hover {
+        transform: translateY(-10px);
+        background: rgba(0, 0, 0, 0.85);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(198, 166, 100, 0.2);
+    }
+
+    .value-item i {
+        font-size: 3rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 2rem;
+        transition: all 0.5s ease;
+        position: relative;
+    }
+
+    .value-item:hover i {
+        color: var(--ramadan-gold-light);
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    .value-item h3 {
+        color: var(--ramadan-gold);
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        transition: all 0.4s ease;
+    }
+
+    .value-item:hover h3 {
+        color: var(--ramadan-gold-light);
+    }
+
+    .value-item p {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        line-height: 1.7;
+        opacity: 0.9;
+        transition: all 0.4s ease;
+        padding: 0 1rem;
+    }
+
+    .value-item:hover p {
+        color: var(--ramadan-gold-light);
+        opacity: 1;
+    }
+
+    .value-item::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        border-radius: 25px;
+        z-index: -1;
+        opacity: 0;
+        transition: all 0.5s ease;
+    }
+
+    .value-item:hover::before {
+        opacity: 0.3;
+    }
+
+    @media (max-width: 1200px) {
+        .mission-text h2 {
+            font-size: 3rem;
+        }
+        
+        .mission-values {
+            gap: 2rem;
+            padding: 0 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .mission-values {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .mission-text h2 {
+            font-size: 2.5rem;
+        }
+        
+        .mission-text > p {
+            font-size: 1.2rem;
+            padding: 1.5rem;
+        }
+        
+        .mission-values {
+            grid-template-columns: 1fr;
+        }
+        
+        .value-item {
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .value-item h3 {
+            font-size: 1.6rem;
+        }
+        
+        .value-item p {
+            font-size: 1.1rem;
+        }
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .journey-content {
+        display: none;
+    }
+
+    .journey-text {
+        max-width: 800px;
+        margin: 0 auto 4rem;
+        text-align: center;
+    }
+
+    .journey-text p {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        line-height: 1.6;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+    }
+
+    .about-values {
+        text-align: center;
+        padding: 100px 0;
+        position: relative;
+        background: transparent;
+    }
+
+    .about-values::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+
+    .about-values .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .about-values h2 {
+        color: var(--ramadan-gold);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-shadow: 0 4px 15px rgba(198, 166, 100, 0.3);
+        position: relative;
+        padding-bottom: 30px;
+        display: block;
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient 3s ease infinite;
+    }
+
+    .about-values h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(to right, 
+            transparent,
+            var(--ramadan-gold) 20%,
+            var(--ramadan-gold-light) 50%,
+            var(--ramadan-gold) 80%,
+            transparent
+        );
+        box-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        margin-top: 4rem;
+    }
+
+    .value-card {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 25px;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .value-card:hover {
+        transform: translateY(-10px);
+        background: rgba(0, 0, 0, 0.85);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(198, 166, 100, 0.2);
+    }
+
+    .value-card i {
+        font-size: 3rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 2rem;
+        transition: all 0.5s ease;
+        position: relative;
+    }
+
+    .value-card:hover i {
+        color: var(--ramadan-gold-light);
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    .value-card h3 {
+        color: var(--ramadan-gold);
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        transition: all 0.4s ease;
+    }
+
+    .value-card:hover h3 {
+        color: var(--ramadan-gold-light);
+    }
+
+    .value-card p {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        line-height: 1.7;
+        opacity: 0.9;
+        transition: all 0.4s ease;
+        padding: 0 1rem;
+    }
+
+    .value-card:hover p {
+        color: var(--ramadan-gold-light);
+        opacity: 1;
+    }
+
+    .value-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        border-radius: 25px;
+        z-index: -1;
+        opacity: 0;
+        transition: all 0.5s ease;
+    }
+
+    .value-card:hover::before {
+        opacity: 0.3;
+    }
+
+    @media (max-width: 1200px) {
+        .about-values h2 {
+            font-size: 3rem;
+        }
+        
+        .values-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            padding: 0 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-values h2 {
+            font-size: 2.5rem;
+        }
+        
+        .values-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .value-card {
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .value-card h3 {
+            font-size: 1.6rem;
+        }
+        
+        .value-card p {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .values-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .section-separator {
+        position: relative;
+        text-align: center;
+        margin: 4rem 0;
+        z-index: 2;
+    }
+
+    .separator-text {
+        display: inline-block;
+        padding: 0 2rem;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.4rem;
+        color: var(--ramadan-gold);
+        position: relative;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 30px;
+        margin: 0 auto;
+        max-width: 80%;
+        line-height: 1.6;
+    }
+
+    .section-separator::before,
+    .section-separator::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 35%;
+        height: 2px;
+        background: linear-gradient(to right, 
+            transparent,
+            rgba(198, 166, 100, 0.2) 20%,
+            rgba(198, 166, 100, 0.8) 50%,
+            rgba(198, 166, 100, 0.2) 80%,
+            transparent
+        );
+    }
+
+    .section-separator::before {
+        left: 0;
+    }
+
+    .section-separator::after {
+        right: 0;
+    }
+
+    @media (max-width: 768px) {
+        .separator-text {
+            font-size: 1.2rem;
+            padding: 0 1.5rem;
+        }
+        
+        .section-separator::before,
+        .section-separator::after {
+            width: 25%;
+        }
+    }
+
+    .journey-content {
+        display: none;
+    }
+
+    .journey-text {
+        max-width: 800px;
+        margin: 0 auto 4rem;
+        text-align: center;
+    }
+
+    .journey-text p {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        line-height: 1.6;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+    }
+
+    .about-journey {
+        text-align: center;
+        padding: 100px 0;
+        position: relative;
+        background: transparent;
+    }
+
+    .about-journey::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+
+    .about-journey .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-journey h2 {
+        color: var(--ramadan-gold);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-shadow: 0 4px 15px rgba(198, 166, 100, 0.3);
+        position: relative;
+        padding-bottom: 30px;
+        display: block;
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient 3s ease infinite;
+    }
+
+    .about-journey h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(to right, 
+            transparent,
+            var(--ramadan-gold) 20%,
+            var(--ramadan-gold-light) 50%,
+            var(--ramadan-gold) 80%,
+            transparent
+        );
+        box-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .journey-text {
+        max-width: 800px;
+        margin: 0 auto 5rem;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .journey-text p {
+        color: var(--ramadan-gold);
+        font-size: 1.3rem;
+        line-height: 1.8;
+        padding: 2rem;
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid var(--ramadan-gold);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.4s ease;
+    }
+
+    .journey-text p:hover {
+        transform: translateY(-5px);
+        background: rgba(0, 0, 0, 0.7);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .journey-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        overflow-x: auto;
+    }
+
+    .journey-card {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 25px;
+        padding: 2.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: none;
+        min-width: 250px;
+    }
+
+    .journey-card:hover {
+        transform: translateY(-10px);
+        background: rgba(0, 0, 0, 0.85);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(198, 166, 100, 0.2);
+    }
+
+    .journey-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 2rem;
+        background: rgba(198, 166, 100, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--ramadan-gold);
+        transition: all 0.5s ease;
+        position: relative;
+    }
+
+    .journey-icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid var(--ramadan-gold);
+        animation: pulse 2s infinite;
+        opacity: 0;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    .journey-icon i {
+        font-size: 2.5rem;
+        color: var(--ramadan-gold);
+        transition: all 0.5s ease;
+    }
+
+    .journey-card:hover .journey-icon {
+        background: var(--ramadan-gold);
+        transform: scale(1.1) rotate(360deg);
+        box-shadow: 0 0 30px rgba(198, 166, 100, 0.3);
+    }
+
+    .journey-card:hover .journey-icon i {
+        color: var(--ramadan-dark);
+    }
+
+    .journey-year {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ramadan-gold);
+        margin-bottom: 1.5rem;
+        padding: 0.6rem 1.8rem;
+        background: rgba(198, 166, 100, 0.1);
+        border-radius: 20px;
+        display: inline-block;
+        border: 1px solid var(--ramadan-gold);
+        transition: all 0.4s ease;
+    }
+
+    .journey-card:hover .journey-year {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+    }
+
+    .journey-details h3 {
+        color: var(--ramadan-gold);
+        font-size: 1.5rem;
+        margin-bottom: 1.2rem;
+        font-weight: 700;
+        transition: all 0.4s ease;
+    }
+
+    .journey-details p {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        line-height: 1.7;
+        opacity: 0.9;
+        transition: all 0.4s ease;
+    }
+
+    .journey-card:hover .journey-details h3,
+    .journey-card:hover .journey-details p {
+        color: var(--ramadan-gold-light);
+    }
+
+    .journey-number {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: rgba(198, 166, 100, 0.1);
+        transition: all 0.5s ease;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .journey-card:hover .journey-number {
+        color: rgba(198, 166, 100, 0.2);
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    .fade-in {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .mission-values > *,
+    .journey-grid > *,
+    .team-grid > *,
+    .values-grid > * {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .mission-values.visible > *,
+    .journey-grid.visible > *,
+    .team-grid.visible > *,
+    .values-grid.visible > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .about-team {
+        text-align: center;
+        padding: 100px 0;
+        position: relative;
+        background: transparent;
+    }
+
+    .about-team::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+
+    .about-team .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-team h2 {
+        color: var(--ramadan-gold);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-shadow: 0 4px 15px rgba(198, 166, 100, 0.3);
+        position: relative;
+        padding-bottom: 30px;
+        display: block;
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient 3s ease infinite;
+    }
+
+    .about-team h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(to right, 
+            transparent,
+            var(--ramadan-gold) 20%,
+            var(--ramadan-gold-light) 50%,
+            var(--ramadan-gold) 80%,
+            transparent
+        );
+        box-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 4rem auto 0;
+        padding: 0 20px;
+    }
+
+    .team-member {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 25px;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-member:hover {
+        transform: translateY(-10px);
+        background: rgba(0, 0, 0, 0.85);
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(198, 166, 100, 0.2);
+    }
+
+    .member-image {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        padding: 8px;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        position: relative;
+        transition: all 0.5s ease;
+    }
+
+    .member-image::after {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        z-index: -1;
+        animation: pulse 2s infinite;
+        opacity: 0;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(1.2);
+            opacity: 0;
+        }
+    }
+
+    .member-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid rgba(0, 0, 0, 0.8);
+        transition: all 0.5s ease;
+    }
+
+    .team-member:hover .member-image {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(198, 166, 100, 0.3);
+    }
+
+    .team-member h3 {
+        color: var(--ramadan-gold);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        transition: all 0.4s ease;
+    }
+
+    .team-member:hover h3 {
+        color: var(--ramadan-gold-light);
+        transform: scale(1.05);
+    }
+
+    .member-title {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding: 0.6rem 1.8rem;
+        background: rgba(198, 166, 100, 0.1);
+        border-radius: 20px;
+        display: inline-block;
+        border: 1px solid var(--ramadan-gold);
+        transition: all 0.4s ease;
+    }
+
+    .team-member:hover .member-title {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+    }
+
+    .member-bio {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        line-height: 1.7;
+        opacity: 0.9;
+        transition: all 0.4s ease;
+        padding: 0 1rem;
+    }
+
+    .team-member:hover .member-bio {
+        color: var(--ramadan-gold-light);
+        opacity: 1;
+    }
+
+    .team-member::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        border-radius: 25px;
+        z-index: -1;
+        opacity: 0;
+        transition: all 0.5s ease;
+    }
+
+    .team-member:hover::before {
+        opacity: 0.3;
+    }
+
+    @media (max-width: 1200px) {
+        .about-team h2 {
+            font-size: 3rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-team h2 {
+            font-size: 2.5rem;
+        }
+        
+        .team-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .team-member {
+            padding: 2rem 1.5rem;
+        }
+        
+        .member-image {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .team-member h3 {
+            font-size: 1.6rem;
+        }
+    }
+
+    .line-divider {
+        width: 80%;
+        height: 2px;
+        margin: 4rem auto;
+        background: linear-gradient(to right, 
+            transparent,
+            rgba(198, 166, 100, 0.2) 20%,
+            rgba(198, 166, 100, 0.8) 50%,
+            rgba(198, 166, 100, 0.2) 80%,
+            transparent
+        );
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="container">
+        <div class="about-header">
+            <h1 class="animate-title">{{ translate('Our Story') }}</h1>
+            <p class="about-subtitle animate-subtitle">{{ translate('Crafting pure, luxurious solutions for hair and skin care') }}</p>
+        </div>
+    </div>
+</section>
+
+<div class="line-divider"></div>
+
+<section class="about-mission">
+    <div class="container">
+        <div class="mission-text">
+            <h2 class="fade-in">{{ translate('Our Mission') }}</h2>
+            <p class="fade-in">{{ translate('At PureLuxe, we believe in the power of pure, natural ingredients combined with scientific innovation to create exceptional beauty care products that enhance your natural radiance.') }}</p>
+            
+            <div class="mission-values">
+                <div class="value-item fade-in">
+                    <i class="fas fa-leaf"></i>
+                    <h3>{{ translate('Natural Ingredients') }}</h3>
+                    <p>{{ translate('We meticulously select the finest natural ingredients, sourcing from sustainable suppliers to create products that nourish and enhance your natural beauty.') }}</p>
+                </div>
+                <div class="value-item fade-in">
+                    <i class="fas fa-flask"></i>
+                    <h3>{{ translate('Scientific Innovation') }}</h3>
+                    <p>{{ translate('Our advanced formulations are backed by extensive research and developed using cutting-edge technology to ensure optimal effectiveness.') }}</p>
+                </div>
+                <div class="value-item fade-in">
+                    <i class="fas fa-heart"></i>
+                    <h3>{{ translate('Customer Care') }}</h3>
+                    <p>{{ translate('Your satisfaction and well-being are our top priorities. We are committed to providing exceptional products and personalized support.') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-divider"></div>
+
+<section id="journey" class="about-journey">
+    <div class="container">
+        <h2 class="fade-in">{{ translate('Our Journey') }}</h2>
+        <div class="journey-text fade-in">
+            <p>{{ translate('Embark on our journey of innovation and excellence in natural beauty care, where each milestone represents our commitment to quality and sustainability.') }}</p>
+        </div>
+        <div class="journey-grid">
+            <div class="journey-card fade-in">
+                <div class="journey-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="journey-year">2025</div>
+                <div class="journey-details">
+                    <h3>{{ translate('The Beginning') }}</h3>
+                    <p>{{ translate('PureLuxe was founded with a vision to revolutionize natural beauty care through innovative formulations and sustainable practices.') }}</p>
+                </div>
+                <div class="journey-number">01</div>
+            </div>
+
+            <div class="journey-card fade-in">
+                <div class="journey-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="journey-year">2025</div>
+                <div class="journey-details">
+                    <h3>{{ translate('First Product Launch') }}</h3>
+                    <p>{{ translate('Introduced our signature cleanser, combining pure ingredients with scientific excellence for exceptional results.') }}</p>
+                </div>
+                <div class="journey-number">02</div>
+            </div>
+
+            <div class="journey-card fade-in">
+                <div class="journey-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="journey-year">2025</div>
+                <div class="journey-details">
+                    <h3>{{ translate('Eco-Friendly Initiative') }}</h3>
+                    <p>{{ translate('Pioneered sustainable packaging solutions and launched our comprehensive eco-conscious product line.') }}</p>
+                </div>
+                <div class="journey-number">03</div>
+            </div>
+
+            <div class="journey-card fade-in">
+                <div class="journey-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="journey-year">2025</div>
+                <div class="journey-details">
+                    <h3>{{ translate('Global Expansion') }}</h3>
+                    <p>{{ translate('Expanded our presence across international markets while maintaining our commitment to quality and sustainability.') }}</p>
+                </div>
+                <div class="journey-number">04</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-divider"></div>
+
+<section class="about-team">
+    <div class="container">
+        <h2 class="fade-in">{{ translate('Our Team') }}</h2>
+        <div class="team-grid">
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/ceo.svg') }}" alt="{{ translate('CEO & Founder') }}">
+                </div>
+                <h3>Seif Mohamed</h3>
+                <p class="member-title">{{ translate('CEO & Founder') }}</p>
+                <p class="member-bio">{{ translate('Leading our vision to revolutionize the luxury beauty care industry with innovative natural solutions.') }}</p>
+            </div>
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/cofounder.svg') }}" alt="{{ translate('Co-Founder') }}">
+                </div>
+                <h3>Abdelrahman Amr</h3>
+                <p class="member-title">{{ translate('Co-Founder and Chemist') }}</p>
+                <p class="member-bio">{{ translate('Bringing expertise in product development and innovation to create exceptional formulations.') }}</p>
+            </div>
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/marketing.svg') }}" alt="{{ translate('Marketing Director') }}">
+                </div>
+                <h3>Hamza Sherif</h3>
+                <p class="member-title">{{ translate('Marketing Director') }}</p>
+                <p class="member-bio">{{ translate('Creating compelling strategies to share our vision with the world.') }}</p>
+            </div>
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/tech.svg') }}" alt="{{ translate('Technical Director') }}">
+                </div>
+                <h3>Adam Gamal</h3>
+                <p class="member-title">{{ translate('Technical Director') }}</p>
+                <p class="member-bio">{{ translate('Driving technological innovation and digital transformation in our processes.') }}</p>
+            </div>
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/operations.svg') }}" alt="{{ translate('Head of Operations') }}">
+                </div>
+                <h3>Adham Nezar</h3>
+                <p class="member-title">{{ translate('Head of Operations') }}</p>
+                <p class="member-bio">{{ translate('Ensuring smooth operations and maintaining our high standards of quality.') }}</p>
+            </div>
+            <div class="team-member fade-in">
+                <div class="member-image">
+                    <img src="{{ url_for('static', filename='images/team/advisor.svg') }}" alt="{{ translate('Strategic Advisor') }}">
+                </div>
+                <h3>Amr Khaled</h3>
+                <p class="member-title">{{ translate('Strategic Advisor') }}</p>
+                <p class="member-bio">{{ translate('Providing strategic guidance and industry expertise to drive our growth and innovation.') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-divider"></div>
+
+<section class="about-values">
+    <div class="container">
+        <h2 class="fade-in">{{ translate('Our Commitment') }}</h2>
+        <div class="values-grid">
+            <div class="value-card fade-in">
+                <i class="fas fa-recycle"></i>
+                <h3>{{ translate('Sustainability') }}</h3>
+                <p>{{ translate('We\'re committed to minimizing our environmental impact through sustainable practices and eco-friendly packaging solutions.') }}</p>
+            </div>
+            <div class="value-card fade-in">
+                <i class="fas fa-certificate"></i>
+                <h3>{{ translate('Quality') }}</h3>
+                <p>{{ translate('Every product undergoes rigorous testing to ensure it meets our high standards of excellence and purity.') }}</p>
+            </div>
+            <div class="value-card fade-in">
+                <i class="fas fa-handshake"></i>
+                <h3>{{ translate('Transparency') }}</h3>
+                <p>{{ translate('We believe in complete transparency about our ingredients and processes, building lasting trust with our customers.') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced fade-in animation for all sections
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Add staggered delay for child elements
+                if (entry.target.classList.contains('mission-values') || 
+                    entry.target.classList.contains('journey-grid') ||
+                    entry.target.classList.contains('team-grid') ||
+                    entry.target.classList.contains('values-grid')) {
+                    const children = entry.target.children;
+                    Array.from(children).forEach((child, index) => {
+                        child.style.transitionDelay = `${0.1 + (index * 0.1)}s`;
+                    });
+                }
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    });
+
+    fadeElements.forEach(element => observer.observe(element));
+
+    // Enhanced animation for hero section
+    document.addEventListener('DOMContentLoaded', () => {
+        const aboutHero = document.querySelector('.about-hero');
+        const title = document.querySelector('.animate-title');
+        const subtitle = document.querySelector('.animate-subtitle');
+
+        if (aboutHero) {
+            setTimeout(() => {
+                aboutHero.style.opacity = '1';
+                aboutHero.style.transform = 'translateY(0)';
+            }, 100);
+        }
+
+        if (title) {
+            setTimeout(() => {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }, 200);
+        }
+
+        if (subtitle) {
+            setTimeout(() => {
+                subtitle.style.opacity = '1';
+                subtitle.style.transform = 'translateY(0)';
+            }, 300);
+        }
+    });
+</script>
+{% endblock %} 

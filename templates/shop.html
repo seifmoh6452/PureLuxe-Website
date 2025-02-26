@@ -1,0 +1,611 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Shop') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ramadan Theme Variables */
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    /* Add pattern to shop section */
+    .shop-section {
+        position: relative;
+        padding: 8rem 0 4rem;
+        background: transparent;
+        min-height: 100vh;
+        z-index: 1;
+    }
+
+    .shop-section::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 1;
+        mix-blend-mode: normal;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .shop-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .shop-header h1 {
+        font-family: 'Poppins', sans-serif;
+        color: var(--ramadan-gold);
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 10px rgba(198, 166, 100, 0.5);
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        text-transform: capitalize;
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .shop-subtitle {
+        font-size: 1.2rem;
+        color: var(--ramadan-gold);
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+        padding: 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .shop-subtitle:hover {
+        background: rgba(0, 0, 0, 0.7);
+        color: var(--ramadan-gold-light);
+        transform: scale(1.02);
+        text-shadow: 0 4px 15px rgba(198, 166, 100, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .product-card {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(10px);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 600px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+                    0 0 20px rgba(198, 166, 100, 0.1);
+    }
+
+    .product-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, var(--ramadan-gold), transparent, var(--ramadan-gold));
+        border-radius: 20px;
+        z-index: -1;
+        opacity: 0.3;
+        transition: all 0.4s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(198, 166, 100, 0.2);
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .product-card:hover::before {
+        opacity: 0.5;
+        animation: borderGlow 2s infinite;
+    }
+
+    @keyframes borderGlow {
+        0% { opacity: 0.3; }
+        50% { opacity: 0.5; }
+        100% { opacity: 0.3; }
+    }
+
+    .product-image {
+        position: relative;
+        padding-top: 100%;
+        overflow: hidden;
+        flex: 0 0 auto;
+        border-bottom: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .product-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 300px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+    }
+
+    .product-title {
+        margin-bottom: 1.5rem;
+        height: 3.4em;
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .product-title a {
+        color: var(--ramadan-gold);
+        text-decoration: none;
+        font-size: 1.4rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+    }
+
+    .product-type {
+        color: var(--ramadan-gold-light);
+        font-size: 1rem;
+        opacity: 0.8;
+        font-weight: normal;
+        padding: 0.2rem 0.8rem;
+        background: rgba(198, 166, 100, 0.1);
+        border-radius: 15px;
+        border: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .product-title a:hover {
+        color: var(--ramadan-gold-light);
+        text-shadow: 0 2px 15px rgba(198, 166, 100, 0.5);
+    }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 0;
+        flex: 0 0 auto;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(198, 166, 100, 0.2);
+        border-bottom: 1px solid rgba(198, 166, 100, 0.2);
+    }
+
+    .product-size {
+        color: var(--ramadan-gold);
+        font-size: 0.95rem;
+        background: rgba(198, 166, 100, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--ramadan-gold);
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .product-size {
+        background: rgba(198, 166, 100, 0.2);
+        box-shadow: 0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stars {
+        color: var(--ramadan-gold);
+    }
+
+    .stars i {
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .stars i {
+        transform: scale(1.1);
+        color: var(--ramadan-gold-light);
+    }
+
+    .product-price {
+        margin: 1.5rem 0;
+        flex: 0 0 auto;
+        text-align: center;
+    }
+
+    .current-price {
+        color: var(--ramadan-gold);
+        font-size: 2rem;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .product-actions {
+        margin-top: auto;
+        padding-top: 1.5rem;
+        flex: 0 0 auto;
+    }
+
+    .add-to-cart-btn {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        background: rgba(198, 166, 100, 0.1);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 15px;
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-to-cart-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(198, 166, 100, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .add-to-cart-btn:hover::before {
+        left: 100%;
+    }
+
+    .add-to-cart-btn:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                    0 0 15px rgba(198, 166, 100, 0.3);
+    }
+
+    .btn-disabled {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(198, 166, 100, 0.3);
+        border-radius: 15px;
+        color: rgba(198, 166, 100, 0.5);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: not-allowed;
+    }
+
+    .out-of-stock-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.9);
+        color: var(--ramadan-gold);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        border: 1px solid var(--ramadan-gold);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Fade In Animation */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .shop-header h1 {
+            font-size: 2.5rem;
+        }
+
+        .shop-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .shop-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+    }
+
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        color: var(--ramadan-gold);
+        background: rgba(0, 0, 0, 0.9);
+        border: 1px solid var(--ramadan-gold);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideIn 0.3s ease forwards;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .alert-success {
+        color: var(--ramadan-gold);
+        border-color: var(--ramadan-gold);
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    .alert-error {
+        color: var(--ramadan-gold);
+        border-color: var(--ramadan-gold);
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    .alert-close {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 1rem;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="shop-section">
+    <div class="container">
+        <div class="shop-header fade-in">
+            <h1>{{ translate('Ramadan Collection') }}</h1>
+            <p class="shop-subtitle">{{ translate('Discover our special range of natural, premium products perfect for your self-care routine during the blessed month') }}</p>
+        </div>
+
+        <div class="shop-grid">
+                    {% for product in products %}
+                    <div class="product-card fade-in">
+                        <div class="product-image">
+                    <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="{{ product.name }}" class="signature-product">
+                            {% if product.stock <= 0 %}
+                    <span class="out-of-stock-badge">{{ translate('Out of Stock') }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                    <h2 class="product-title">
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }} [{{ product.product_type }}]</a>
+                    </h2>
+                            <div class="product-meta">
+                        <span class="product-size">{{ product.size }}</span>
+                                <div class="product-rating">
+                                    <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span>(128)</span>
+                                </div>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price">{{ "%.2f"|format(product.price) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}</span>
+                            </div>
+                            <div class="product-actions">
+                                {% if product.stock > 0 %}
+                                <form class="add-to-cart-form" action="{{ url_for('add_to_cart') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="add-to-cart-btn">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        {{ translate('Add to Cart') }}
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn-disabled" disabled>
+                                    {{ translate('Out of Stock') }}
+                                </button>
+                                {% endif %}
+                            </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+    // Fade-in animation
+    document.addEventListener('DOMContentLoaded', function() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    fadeElements.forEach(element => observer.observe(element));
+    });
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fade-in animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(element => observer.observe(element));
+
+        // Handle Add to Cart form submissions
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Update cart count in header
+                        const cartCount = document.querySelector('.cart-count');
+                        if (cartCount) {
+                            cartCount.textContent = data.cart_count;
+                        }
+                        
+                        // Create success alert
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-success';
+                        alert.innerHTML = `
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ translate('Item added to cart successfully') }}
+                            <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        document.body.appendChild(alert);
+                        
+                        // Auto-remove alert after 3 seconds
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 3000);
+                        
+                        // Update cart total if available
+                        if (data.cart_total) {
+                            const cartTotal = document.querySelector('.cart-total');
+                            if (cartTotal) {
+                                cartTotal.textContent = `${data.cart_total.toFixed(2)} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}`;
+                            }
+                        }
+                    } else {
+                        throw new Error(data.message || '{{ translate("Failed to add item to cart") }}');
+                    }
+                } catch (error) {
+                    // Create error alert
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-error';
+                    alert.innerHTML = `
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        ${error.message || '{{ translate("An error occurred while adding the item to cart") }}'}
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.body.appendChild(alert);
+                } finally {
+                    if (submitBtn) submitBtn.disabled = false;
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

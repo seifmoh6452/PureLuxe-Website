@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Terms of Service') }} - PureLuxe{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card bg-dark text-gold border-gold">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">{{ translate('Terms of Service') }}</h1>
+                    
+                    <section class="mb-4">
+                        <h2>1. {{ translate('Acceptance of Terms') }}</h2>
+                        <p>{{ translate('By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>2. {{ translate('Use License') }}</h2>
+                        <p>{{ translate('Permission is granted to temporarily download one copy of the materials (information or software) on PureLuxe\'s website for personal, non-commercial transitory viewing only.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>3. {{ translate('Disclaimer') }}</h2>
+                        <p>{{ translate('The materials on PureLuxe\'s website are provided on an \'as is\' basis. PureLuxe makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>4. {{ translate('Limitations') }}</h2>
+                        <p>{{ translate('In no event shall PureLuxe or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on PureLuxe\'s website.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>5. {{ translate('Accuracy of Materials') }}</h2>
+                        <p>{{ translate('The materials appearing on PureLuxe\'s website could include technical, typographical, or photographic errors. PureLuxe does not warrant that any of the materials on its website are accurate, complete or current.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>6. {{ translate('Links') }}</h2>
+                        <p>{{ translate('PureLuxe has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by PureLuxe of the site.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>7. {{ translate('Modifications') }}</h2>
+                        <p>{{ translate('PureLuxe may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.') }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2>8. {{ translate('Governing Law') }}</h2>
+                        <p>{{ translate('These terms and conditions are governed by and construed in accordance with the laws and you irrevocably submit to the exclusive jurisdiction of the courts in that location.') }}</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
