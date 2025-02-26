@@ -22,18 +22,18 @@ def init_db():
             {
                 'name': 'PureLuxe Clarifying Cleanser',
                 'description': 'Gentle clarifying cleanser for sensitive skin',
-                'price': 189.99,
+                'price': 99.99,
                 'image_url': 'PureLuxe Clarifying Cleanser.jpg',
-                'size': '150ml',
+                'size': '200ml',
                 'stock': 100,
                 'product_type': 'Cleanser'
             },
             {
                 'name': 'PureLuxe Sensitive Formula',
                 'description': 'Specially formulated for sensitive skin',
-                'price': 169.99,
+                'price': 149.99,
                 'image_url': 'PureLuxe Sensitive Formula.jpg',
-                'size': '200ml',
+                'size': '250ml',
                 'stock': 100,
                 'product_type': 'Shampoo'
             },
@@ -42,16 +42,16 @@ def init_db():
                 'description': 'Perfect travel-sized skin care set',
                 'price': 69.99,
                 'image_url': 'PureLuxe Travel Companion.jpg',
-                'size': '100ml',
+                'size': '150ml',
                 'stock': 100,
                 'product_type': 'Travel Kit'
             },
             {
                 'name': 'PureLuxe Professional Size',
                 'description': 'Professional-sized skin care products',
-                'price': 249.99,
+                'price': 299.99,
                 'image_url': 'PureLuxe Professional Size.jpg',
-                'size': '500ml',
+                'size': '2L',
                 'stock': 100,
                 'product_type': 'Shampoo'
             },
@@ -60,7 +60,7 @@ def init_db():
                 'description': 'Intensive hydration treatment',
                 'price': 159.99,
                 'image_url': 'PureLuxe Hydration Boost.jpg',
-                'size': '200ml',
+                'size': '250ml',
                 'stock': 100,
                 'product_type': 'Conditioner'
             },
@@ -78,7 +78,7 @@ def init_db():
                 'description': 'Luxury gift set with our best products',
                 'price': 299.99,
                 'image_url': 'PureLuxe Gift Set.jpg',
-                'size': 'Various',
+                'size': 'Set',
                 'stock': 100,
                 'product_type': 'Gift Set'
             },
@@ -87,7 +87,7 @@ def init_db():
                 'description': 'Large family-sized skin care products',
                 'price': 249.99,
                 'image_url': 'PureLuxe Family Size.jpg',
-                'size': '500ml',
+                'size': '1L',
                 'stock': 100,
                 'product_type': 'Shampoo'
             }
