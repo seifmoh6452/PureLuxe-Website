@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}About Us - PureLuxe{% endblock %}
+{% block title %}{{ translate('About Us - PureLuxe') }}{% endblock %}
 
 {% block extra_css %}
 <style>
+    /* Enhanced Ramadan Theme Styles */
     :root {
         --ramadan-gold: #C6A664;
         --ramadan-gold-light: #E5C687;
@@ -11,12 +12,26 @@
         --ramadan-deep: #000000;
         --ramadan-light: #F5F0E6;
         --ramadan-accent: #C6A664;
+        --ramadan-green: #2D8B7E;
     }
 
     /* Add pattern to body */
     body {
         position: relative;
-        background: var(--ramadan-dark);
+        background-color: transparent;
+    }
+
+    .backdrop {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        left: 0;
+        top: 0;
+        padding: 0;
+        margin: 0;
+        pointer-events: none;
     }
 
     body::before {
@@ -26,12 +41,24 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}") repeat;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
         background-size: cover;
         background-position: center;
+        background-repeat: repeat;
         opacity: 1;
+        mix-blend-mode: normal;
         pointer-events: none;
-        z-index: -1;
+        z-index: 1;
+        filter: none;
+    }
+
+    /* Ensure content is above pattern */
+    .container,
+    .about-section,
+    .about-content,
+    .about-header {
+        position: relative;
+        z-index: 3;
     }
 
     .about-hero,
@@ -1176,185 +1203,188 @@
 {% endblock %}
 
 {% block content %}
-<section class="about-hero">
-    <div class="container">
-        <div class="about-header">
-            <h1 class="animate-title">{{ translate('Our Story') }}</h1>
-            <p class="about-subtitle animate-subtitle">{{ translate('Crafting pure, luxurious solutions for hair and skin care') }}</p>
-        </div>
-    </div>
-</section>
-
-<div class="line-divider"></div>
-
-<section class="about-mission">
-    <div class="container">
-        <div class="mission-text">
-            <h2 class="fade-in">{{ translate('Our Mission') }}</h2>
-            <p class="fade-in">{{ translate('At PureLuxe, we believe in the power of pure, natural ingredients combined with scientific innovation to create exceptional beauty care products that enhance your natural radiance.') }}</p>
-            
-            <div class="mission-values">
-                <div class="value-item fade-in">
-                    <i class="fas fa-leaf"></i>
-                    <h3>{{ translate('Natural Ingredients') }}</h3>
-                    <p>{{ translate('We meticulously select the finest natural ingredients, sourcing from sustainable suppliers to create products that nourish and enhance your natural beauty.') }}</p>
-                </div>
-                <div class="value-item fade-in">
-                    <i class="fas fa-flask"></i>
-                    <h3>{{ translate('Scientific Innovation') }}</h3>
-                    <p>{{ translate('Our advanced formulations are backed by extensive research and developed using cutting-edge technology to ensure optimal effectiveness.') }}</p>
-                </div>
-                <div class="value-item fade-in">
-                    <i class="fas fa-heart"></i>
-                    <h3>{{ translate('Customer Care') }}</h3>
-                    <p>{{ translate('Your satisfaction and well-being are our top priorities. We are committed to providing exceptional products and personalized support.') }}</p>
-                </div>
+<div class="backdrop"></div>
+<section class="about-section">
+    <section class="about-hero">
+        <div class="container">
+            <div class="about-header">
+                <h1 class="animate-title">{{ translate('Our Story') }}</h1>
+                <p class="about-subtitle animate-subtitle">{{ translate('Crafting pure, luxurious solutions for hair and skin care') }}</p>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<div class="line-divider"></div>
+    <div class="line-divider"></div>
 
-<section id="journey" class="about-journey">
-    <div class="container">
-        <h2 class="fade-in">{{ translate('Our Journey') }}</h2>
-        <div class="journey-text fade-in">
-            <p>{{ translate('Embark on our journey of innovation and excellence in natural beauty care, where each milestone represents our commitment to quality and sustainability.') }}</p>
-        </div>
-        <div class="journey-grid">
-            <div class="journey-card fade-in">
-                <div class="journey-icon">
-                    <i class="fas fa-rocket"></i>
+    <section class="about-mission">
+        <div class="container">
+            <div class="mission-text">
+                <h2 class="fade-in">{{ translate('Our Mission') }}</h2>
+                <p class="fade-in">{{ translate('At PureLuxe, we believe in the power of pure, natural ingredients combined with scientific innovation to create exceptional beauty care products that enhance your natural radiance.') }}</p>
+                
+                <div class="mission-values fade-in">
+                    <div class="value-item">
+                        <i class="fas fa-leaf"></i>
+                        <h3>{{ translate('Natural Ingredients') }}</h3>
+                        <p>{{ translate('We meticulously select the finest natural ingredients, sourcing from sustainable suppliers to create products that nourish and enhance your natural beauty.') }}</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-flask"></i>
+                        <h3>{{ translate('Scientific Innovation') }}</h3>
+                        <p>{{ translate('Our advanced formulations are backed by extensive research and developed using cutting-edge technology to ensure optimal effectiveness.') }}</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-heart"></i>
+                        <h3>{{ translate('Customer Care') }}</h3>
+                        <p>{{ translate('Your satisfaction and well-being are our top priorities. We are committed to providing exceptional products and personalized support.') }}</p>
+                    </div>
                 </div>
-                <div class="journey-year">2025</div>
-                <div class="journey-details">
-                    <h3>{{ translate('The Beginning') }}</h3>
-                    <p>{{ translate('PureLuxe was founded with a vision to revolutionize natural beauty care through innovative formulations and sustainable practices.') }}</p>
-                </div>
-                <div class="journey-number">01</div>
-            </div>
-
-            <div class="journey-card fade-in">
-                <div class="journey-icon">
-                    <i class="fas fa-flask"></i>
-                </div>
-                <div class="journey-year">2025</div>
-                <div class="journey-details">
-                    <h3>{{ translate('First Product Launch') }}</h3>
-                    <p>{{ translate('Introduced our signature cleanser, combining pure ingredients with scientific excellence for exceptional results.') }}</p>
-                </div>
-                <div class="journey-number">02</div>
-            </div>
-
-            <div class="journey-card fade-in">
-                <div class="journey-icon">
-                    <i class="fas fa-leaf"></i>
-                </div>
-                <div class="journey-year">2025</div>
-                <div class="journey-details">
-                    <h3>{{ translate('Eco-Friendly Initiative') }}</h3>
-                    <p>{{ translate('Pioneered sustainable packaging solutions and launched our comprehensive eco-conscious product line.') }}</p>
-                </div>
-                <div class="journey-number">03</div>
-            </div>
-
-            <div class="journey-card fade-in">
-                <div class="journey-icon">
-                    <i class="fas fa-globe-americas"></i>
-                </div>
-                <div class="journey-year">2025</div>
-                <div class="journey-details">
-                    <h3>{{ translate('Global Expansion') }}</h3>
-                    <p>{{ translate('Expanded our presence across international markets while maintaining our commitment to quality and sustainability.') }}</p>
-                </div>
-                <div class="journey-number">04</div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<div class="line-divider"></div>
+    <div class="line-divider"></div>
 
-<section class="about-team">
-    <div class="container">
-        <h2 class="fade-in">{{ translate('Our Team') }}</h2>
-        <div class="team-grid">
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/ceo.svg') }}" alt="{{ translate('CEO & Founder') }}">
-                </div>
-                <h3>Seif Mohamed</h3>
-                <p class="member-title">{{ translate('CEO & Founder') }}</p>
-                <p class="member-bio">{{ translate('Leading our vision to revolutionize the luxury beauty care industry with innovative natural solutions.') }}</p>
+    <section id="journey" class="about-journey">
+        <div class="container">
+            <h2 class="fade-in">{{ translate('Our Journey') }}</h2>
+            <div class="journey-text fade-in">
+                <p>{{ translate('Embark on our journey of innovation and excellence in natural beauty care, where each milestone represents our commitment to quality and sustainability.') }}</p>
             </div>
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/cofounder.svg') }}" alt="{{ translate('Co-Founder') }}">
+            <div class="journey-grid">
+                <div class="journey-card fade-in">
+                    <div class="journey-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="journey-year">2025</div>
+                    <div class="journey-details">
+                        <h3>{{ translate('The Beginning') }}</h3>
+                        <p>{{ translate('PureLuxe was founded with a vision to revolutionize natural beauty care through innovative formulations and sustainable practices.') }}</p>
+                    </div>
+                    <div class="journey-number">01</div>
                 </div>
-                <h3>Abdelrahman Amr</h3>
-                <p class="member-title">{{ translate('Co-Founder and Chemist') }}</p>
-                <p class="member-bio">{{ translate('Bringing expertise in product development and innovation to create exceptional formulations.') }}</p>
-            </div>
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/marketing.svg') }}" alt="{{ translate('Marketing Director') }}">
+
+                <div class="journey-card fade-in">
+                    <div class="journey-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="journey-year">2025</div>
+                    <div class="journey-details">
+                        <h3>{{ translate('First Product Launch') }}</h3>
+                        <p>{{ translate('Introduced our signature cleanser, combining pure ingredients with scientific excellence for exceptional results.') }}</p>
+                    </div>
+                    <div class="journey-number">02</div>
                 </div>
-                <h3>Hamza Sherif</h3>
-                <p class="member-title">{{ translate('Marketing Director') }}</p>
-                <p class="member-bio">{{ translate('Creating compelling strategies to share our vision with the world.') }}</p>
-            </div>
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/tech.svg') }}" alt="{{ translate('Technical Director') }}">
+
+                <div class="journey-card fade-in">
+                    <div class="journey-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="journey-year">2025</div>
+                    <div class="journey-details">
+                        <h3>{{ translate('Eco-Friendly Initiative') }}</h3>
+                        <p>{{ translate('Pioneered sustainable packaging solutions and launched our comprehensive eco-conscious product line.') }}</p>
+                    </div>
+                    <div class="journey-number">03</div>
                 </div>
-                <h3>Adam Gamal</h3>
-                <p class="member-title">{{ translate('Technical Director') }}</p>
-                <p class="member-bio">{{ translate('Driving technological innovation and digital transformation in our processes.') }}</p>
-            </div>
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/operations.svg') }}" alt="{{ translate('Head of Operations') }}">
+
+                <div class="journey-card fade-in">
+                    <div class="journey-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="journey-year">2025</div>
+                    <div class="journey-details">
+                        <h3>{{ translate('Global Expansion') }}</h3>
+                        <p>{{ translate('Expanded our presence across international markets while maintaining our commitment to quality and sustainability.') }}</p>
+                    </div>
+                    <div class="journey-number">04</div>
                 </div>
-                <h3>Adham Nezar</h3>
-                <p class="member-title">{{ translate('Head of Operations') }}</p>
-                <p class="member-bio">{{ translate('Ensuring smooth operations and maintaining our high standards of quality.') }}</p>
-            </div>
-            <div class="team-member fade-in">
-                <div class="member-image">
-                    <img src="{{ url_for('static', filename='images/team/advisor.svg') }}" alt="{{ translate('Strategic Advisor') }}">
-                </div>
-                <h3>Amr Khaled</h3>
-                <p class="member-title">{{ translate('Strategic Advisor') }}</p>
-                <p class="member-bio">{{ translate('Providing strategic guidance and industry expertise to drive our growth and innovation.') }}</p>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<div class="line-divider"></div>
+    <div class="line-divider"></div>
 
-<section class="about-values">
-    <div class="container">
-        <h2 class="fade-in">{{ translate('Our Commitment') }}</h2>
-        <div class="values-grid">
-            <div class="value-card fade-in">
-                <i class="fas fa-recycle"></i>
-                <h3>{{ translate('Sustainability') }}</h3>
-                <p>{{ translate('We\'re committed to minimizing our environmental impact through sustainable practices and eco-friendly packaging solutions.') }}</p>
-            </div>
-            <div class="value-card fade-in">
-                <i class="fas fa-certificate"></i>
-                <h3>{{ translate('Quality') }}</h3>
-                <p>{{ translate('Every product undergoes rigorous testing to ensure it meets our high standards of excellence and purity.') }}</p>
-            </div>
-            <div class="value-card fade-in">
-                <i class="fas fa-handshake"></i>
-                <h3>{{ translate('Transparency') }}</h3>
-                <p>{{ translate('We believe in complete transparency about our ingredients and processes, building lasting trust with our customers.') }}</p>
+    <section class="about-team">
+        <div class="container">
+            <h2 class="fade-in">{{ translate('Our Team') }}</h2>
+            <div class="team-grid">
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/ceo.svg') }}" alt="{{ translate('CEO & Founder') }}">
+                    </div>
+                    <h3>Seif Mohamed</h3>
+                    <p class="member-title">{{ translate('CEO & Founder') }}</p>
+                    <p class="member-bio">{{ translate('Leading our vision to revolutionize the luxury beauty care industry with innovative natural solutions.') }}</p>
+                </div>
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/cofounder.svg') }}" alt="{{ translate('Co-Founder') }}">
+                    </div>
+                    <h3>Abdelrahman Amr</h3>
+                    <p class="member-title">{{ translate('Co-Founder and Chemist') }}</p>
+                    <p class="member-bio">{{ translate('Bringing expertise in product development and innovation to create exceptional formulations.') }}</p>
+                </div>
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/marketing.svg') }}" alt="{{ translate('Marketing Director') }}">
+                    </div>
+                    <h3>Hamza Sherif</h3>
+                    <p class="member-title">{{ translate('Marketing Director') }}</p>
+                    <p class="member-bio">{{ translate('Creating compelling strategies to share our vision with the world.') }}</p>
+                </div>
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/tech.svg') }}" alt="{{ translate('Technical Director') }}">
+                    </div>
+                    <h3>Adam Gamal</h3>
+                    <p class="member-title">{{ translate('Technical Director') }}</p>
+                    <p class="member-bio">{{ translate('Driving technological innovation and digital transformation in our processes.') }}</p>
+                </div>
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/operations.svg') }}" alt="{{ translate('Head of Operations') }}">
+                    </div>
+                    <h3>Adham Nezar</h3>
+                    <p class="member-title">{{ translate('Head of Operations') }}</p>
+                    <p class="member-bio">{{ translate('Ensuring smooth operations and maintaining our high standards of quality.') }}</p>
+                </div>
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/advisor.svg') }}" alt="{{ translate('Strategic Advisor') }}">
+                    </div>
+                    <h3>Amr Khaled</h3>
+                    <p class="member-title">{{ translate('Strategic Advisor') }}</p>
+                    <p class="member-bio">{{ translate('Providing strategic guidance and industry expertise to drive our growth and innovation.') }}</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <div class="line-divider"></div>
+
+    <section class="about-values">
+        <div class="container">
+            <h2 class="fade-in">{{ translate('Our Commitment') }}</h2>
+            <div class="values-grid">
+                <div class="value-card fade-in">
+                    <i class="fas fa-recycle"></i>
+                    <h3>{{ translate('Sustainability') }}</h3>
+                    <p>{{ translate('We\'re committed to minimizing our environmental impact through sustainable practices and eco-friendly packaging solutions.') }}</p>
+                </div>
+                <div class="value-card fade-in">
+                    <i class="fas fa-certificate"></i>
+                    <h3>{{ translate('Quality') }}</h3>
+                    <p>{{ translate('Every product undergoes rigorous testing to ensure it meets our high standards of excellence and purity.') }}</p>
+                </div>
+                <div class="value-card fade-in">
+                    <i class="fas fa-handshake"></i>
+                    <h3>{{ translate('Transparency') }}</h3>
+                    <p>{{ translate('We believe in complete transparency about our ingredients and processes, building lasting trust with our customers.') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </section>
 {% endblock %}
 
@@ -1412,5 +1442,20 @@
             }, 300);
         }
     });
+
+    // Fade-in animation for special offers
+    const offerElements = document.querySelectorAll('.mission-values .value-item');
+    const offerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    offerElements.forEach(element => offerObserver.observe(element));
 </script>
 {% endblock %} 

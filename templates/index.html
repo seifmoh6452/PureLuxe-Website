@@ -18,7 +18,20 @@
     /* Add pattern to body */
     body {
         position: relative;
-        background-color: transparent;c
+        background-color: transparent;
+    }
+
+    .backdrop {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        left: 0;
+        top: 0;
+        padding: 0;
+        margin: 0;
+        pointer-events: none;
     }
 
     body::before {
@@ -95,7 +108,7 @@
     /* Ensure content is above pattern */
     .container {
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     /* Update section content z-index */
@@ -107,7 +120,7 @@
     .faq-grid,
     .ramadan-offers {
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     /* Global section styles */
@@ -1658,6 +1671,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="backdrop"></div>
 <section class="hero">
     <div class="container">
         <div class="hero-content fade-in">
@@ -1879,85 +1893,26 @@
 
 {% block extra_js %}
 <script>
-    // Fixed 4-day countdown for Ramadan
     function updateCountdown() {
-        // Set fixed 3 days
-        const days = 3;
-        const now = new Date();
-        const hours = 23 - now.getHours();
-        const minutes = 59 - now.getMinutes();
-        const seconds = 59 - now.getSeconds();
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
 
-        document.getElementById('days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        // Set countdown to zero since Ramadan is today
+        daysElement.textContent = '0';
+        hoursElement.textContent = '0';
+        minutesElement.textContent = '0';
+        secondsElement.textContent = '0';
 
-        // Add special effects for the 4-day countdown
-        const countdownItems = document.querySelectorAll('.countdown-item');
-        countdownItems.forEach(item => {
-            item.style.animation = 'pulse 2s infinite';
-            item.style.borderColor = 'var(--ramadan-gold)';
-            item.style.boxShadow = '0 0 20px rgba(198, 166, 100, 0.3)';
-        });
-
-        // Add CSS for pulse animation if not already present
-        if (!document.querySelector('#countdown-pulse')) {
-            const style = document.createElement('style');
-            style.id = 'countdown-pulse';
-            style.textContent = `
-                @keyframes pulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                    100% { transform: scale(1); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // Add excitement message if not already present
-        if (!document.querySelector('.countdown-message')) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'countdown-message';
-            messageDiv.style.cssText = `
-                width: 100%;
-                text-align: center;
-                margin-top: 2rem;
-                color: var(--ramadan-gold);
-                font-size: 1.2rem;
-                font-weight: 500;
-                animation: fadeInUp 1s ease;
-            `;
-            messageDiv.innerHTML = `
-                <div style="font-family: 'Noto Naskh Arabic', serif; margin-bottom: 0.5rem; transition: all 0.3s ease;">
-                    {{ translate('Just 3 Days Until The Blessed Month!') }}
-                </div>
-                <div style="color: var(--ramadan-gold); font-size: 1rem; transition: all 0.3s ease;">
-                    {{ translate('Prepare for your spiritual journey with our special Ramadan collection') }}
-                </div>
-            `;
-            document.querySelector('.ramadan-countdown').appendChild(messageDiv);
-
-            // Add fadeInUp animation
-            const fadeInStyle = document.createElement('style');
-            fadeInStyle.textContent = `
-                @keyframes fadeInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-            `;
-            document.head.appendChild(fadeInStyle);
-        }
+        // Optionally, display a message that Ramadan has started
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'countdown-message';
+        messageDiv.textContent = 'Ramadan has started!';
+        document.querySelector('.ramadan-countdown').appendChild(messageDiv);
     }
 
-    // Update countdown every second
-    setInterval(updateCountdown, 1000);
+    // Call the function to update the countdown immediately
     updateCountdown();
 
     // Fade-in animation
