@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Contacting PureLuxe</title>
+    <style>
+        :root {
+            --ramadan-gold: #C6A664;
+            --ramadan-dark: #000000;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--ramadan-dark);
+            color: var(--ramadan-gold);
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--ramadan-dark);
+            border: 2px solid var(--ramadan-gold);
+            border-radius: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--ramadan-gold);
+        }
+        
+        .header h1 {
+            color: var(--ramadan-gold);
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+        
+        .content {
+            padding: 20px 0;
+        }
+        
+        .message-box {
+            background: rgba(198, 166, 100, 0.1);
+            border: 1px solid var(--ramadan-gold);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--ramadan-gold);
+            font-size: 12px;
+            color: var(--ramadan-gold);
+        }
+        
+        .social-links {
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: var(--ramadan-gold);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Thank You for Contacting PureLuxe</h1>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ name }},</p>
+            
+            <p>Thank you for reaching out to us. We have received your message and our team will review it promptly.</p>
+            
+            <div class="message-box">
+                <strong>Your message:</strong><br>
+                {{ message }}
+            </div>
+            
+            <p>We typically respond to all inquiries within 24 hours. If your matter is urgent, you can also reach us at:</p>
+            <ul>
+                <li>Phone: +20 1000041073</li>
+                <li>Email: support@pure-luxe.shop</li>
+            </ul>
+            
+            <p>Best regards,<br>The PureLuxe Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>Follow us on social media for updates and special offers:</p>
+            <div class="social-links">
+                <a href="#">Facebook</a> |
+                <a href="#">Instagram</a> |
+                <a href="#">Twitter</a>
+            </div>
+            <p>&copy; {{ now().year }} PureLuxe. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

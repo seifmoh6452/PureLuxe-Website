@@ -333,6 +333,31 @@
     [dir="rtl"] .checkbox-label {
         flex-direction: row-reverse;
     }
+
+    .btn-google {
+        background-color: #fff;
+        color: #757575;
+        border: 1px solid #ddd;
+        padding: 10px 20px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background-color 0.3s;
+        width: 100%;
+        max-width: 300px;
+        margin: 10px auto;
+    }
+
+    .btn-google:hover {
+        background-color: #f5f5f5;
+        text-decoration: none;
+    }
+
+    .btn-google img {
+        margin-right: 8px;
+    }
 </style>
 {% endblock %}
 
@@ -371,10 +396,10 @@
                     <span>{{ translate('or continue with') }}</span>
                 </div>
                 <div class="social-login">
-                    <button type="button" class="btn-social">
+                    <a href="{{ url_for('google_login') }}" class="btn-social">
                         <i class="fab fa-google"></i>
                         {{ translate('Continue with Google') }}
-                    </button>
+                    </a>
                     <button type="button" class="btn-social">
                         <i class="fab fa-facebook"></i>
                         {{ translate('Continue with Facebook') }}

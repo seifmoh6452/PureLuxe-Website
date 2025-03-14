@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - PureLuxe</title>
+    <style>
+        :root {
+            --ramadan-gold: #DAA520;
+            --ramadan-dark: #2C2C2C;
+            --ramadan-light: #FFFFFF;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #F5F5F5;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 30px;
+            background: #FFFFFF;
+            border: 2px solid #DAA520;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #DAA520;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #DAA520;
+            margin: 0;
+            font-size: 28px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            padding: 20px 0;
+            color: #333333;
+        }
+        .verification-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #DAA520;
+            color: #FFFFFF !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .verification-button:hover {
+            background-color: #C69500;
+        }
+        .verification-link {
+            word-break: break-all;
+            color: #DAA520;
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #DAA520;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666666;
+        }
+        .note {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #F8F8F8;
+            border-left: 3px solid #DAA520;
+        }
+        .center {
+            text-align: center;
+        }
+        p {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to PureLuxe</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ user.first_name }},</p>
+            
+            <p>Thank you for creating an account with PureLuxe. To complete your registration and access our exclusive products, please verify your email address by clicking the button below:</p>
+            
+            <div class="center">
+                <a href="{{ verification_url }}" class="verification-button">Verify Email Address</a>
+            </div>
+            
+            <p>If the button above doesn't work, you can copy and paste the following link into your browser:</p>
+            <p class="verification-link">{{ verification_url }}</p>
+            
+            <p class="note">This verification link will expire in 1 hour for security purposes.</p>
+            
+            <p>If you did not create an account with PureLuxe, please ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; {{ now.year }} PureLuxe. All rights reserved.</p>
+            <p>This is an automated message, please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html> 

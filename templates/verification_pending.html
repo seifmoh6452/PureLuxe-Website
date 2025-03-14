@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - PureLuxe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .verification-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .verification-icon {
+            font-size: 48px;
+            color: #DAA520;
+            margin-bottom: 20px;
+        }
+
+        .verification-title {
+            color: #2C2C2C;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .verification-text {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .countdown {
+            font-size: 20px;
+            color: #DAA520;
+            margin: 20px 0;
+        }
+
+        .resend-button {
+            background-color: #DAA520;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .resend-button:hover {
+            background-color: #B8860B;
+        }
+
+        .resend-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <div class="verification-icon">📧</div>
+        <h1 class="verification-title">Verify Your Email</h1>
+        <p class="verification-text">
+            We've sent a verification link to <strong>{{ email }}</strong>.<br>
+            Please check your inbox and click the verification link to complete your registration.
+        </p>
+        <p class="verification-text">
+            The verification link will expire in:
+        </p>
+        <div class="countdown" id="countdown">60:00</div>
+        <div id="alert" class="alert"></div>
+        <p class="verification-text">
+            Didn't receive the email?<br>
+            Check your spam folder or request a new verification link.
+        </p>
+        <button class="resend-button" id="resendButton" onclick="resendVerification()" disabled>
+            Resend Verification Email (<span id="resendTimer">60</span>s)
+        </button>
+    </div>
+
+    <script>
+        // Countdown timer for link expiration
+        function startExpirationTimer() {
+            let minutes = 59;
+            let seconds = 59;
+            const countdownElement = document.getElementById('countdown');
+
+            const timer = setInterval(() => {
+                if (minutes === 0 && seconds === 0) {
+                    clearInterval(timer);
+                    countdownElement.textContent = "Link Expired";
+                    return;
+                }
+
+                if (seconds === 0) {
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Resend button timer
+        function startResendTimer() {
+            let seconds = 60;
+            const resendButton = document.getElementById('resendButton');
+            const resendTimer = document.getElementById('resendTimer');
+
+            const timer = setInterval(() => {
+                seconds--;
+                resendTimer.textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    resendButton.disabled = false;
+                    resendButton.textContent = 'Resend Verification Email';
+                }
+            }, 1000);
+        }
+
+        // Function to show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Function to resend verification email
+        async function resendVerification() {
+            const resendButton = document.getElementById('resendButton');
+            resendButton.disabled = true;
+
+            try {
+                const response = await fetch('/resend_verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showAlert('Verification email resent successfully!', 'success');
+                    startResendTimer();
+                } else {
+                    showAlert(data.message || 'Error resending verification email', 'error');
+                    resendButton.disabled = false;
+                }
+            } catch (error) {
+                showAlert('Error resending verification email', 'error');
+                resendButton.disabled = false;
+            }
+        }
+
+        // Check verification status periodically
+        function checkVerificationStatus() {
+            fetch('/check_verification_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.verified) {
+                        showAlert('Email verified successfully! Redirecting to home page...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
+                    }
+                });
+        }
+
+        // Start timers and status checking when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            startExpirationTimer();
+            startResendTimer();
+            // Check verification status every 2 seconds
+            setInterval(checkVerificationStatus, 2000);
+        });
+    </script>
+</body>
+</html> 

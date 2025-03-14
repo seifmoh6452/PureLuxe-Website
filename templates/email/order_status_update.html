@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --ramadan-gold: #D4AF37;
+            --ramadan-gold-light: #F4D03F;
+            --ramadan-dark: #1A1A1A;
+            --ramadan-deep: #000000;
+            --ramadan-light: #F5F0E6;
+            --ramadan-accent: #D4AF37;
+            --ramadan-shadow: rgba(212, 175, 55, 0.15);
+            --ramadan-border: rgba(212, 175, 55, 0.3);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ramadan-gold);
+            background: linear-gradient(to bottom, var(--ramadan-dark), var(--ramadan-deep));
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--ramadan-gold);
+            margin-bottom: 2rem;
+        }
+        .status-update {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--ramadan-border);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px var(--ramadan-shadow);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .status-pending {
+            background-color: var(--ramadan-gold);
+            color: var(--ramadan-dark);
+        }
+        .status-completed {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .status-cancelled {
+            background-color: #f44336;
+            color: white;
+        }
+        .order-info {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--ramadan-border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px var(--ramadan-shadow);
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .items-table th, .items-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--ramadan-border);
+            text-align: left;
+        }
+        .items-table th {
+            background-color: var(--ramadan-gold);
+            color: var(--ramadan-dark);
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: var(--ramadan-gold);
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--ramadan-border);
+            font-size: 0.9em;
+            color: var(--ramadan-gold-light);
+        }
+        h1, h2, h3 {
+            color: var(--ramadan-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Order Status Update</h1>
+    </div>
+
+    <div class="status-update">
+        <h2>{{ status_message }}</h2>
+        <div class="status-badge status-{{ new_status }}">
+            {{ new_status.upper() }}
+        </div>
+    </div>
+
+    <div class="order-info">
+        <h2>Order #{{ order.id }}</h2>
+        <p>Date: {{ order.date_ordered.strftime('%B %d, %Y') }}</p>
+        
+        <h3>Shipping Address:</h3>
+        {% for line in shipping_address %}
+        <p>{{ line }}</p>
+        {% endfor %}
+    </div>
+
+    <h3>Order Items:</h3>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>EGP {{ "%.2f"|format(item.price) }}</td>
+                <td>EGP {{ "%.2f"|format(item.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        <p>Total: EGP {{ "%.2f"|format(order.total / 30.90) }}</p>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for shopping with PureLuxe!</p>
+        <p>If you have any questions about your order, please contact us at support@pure-luxe.shop</p>
+    </div>
+</body>
+</html> 

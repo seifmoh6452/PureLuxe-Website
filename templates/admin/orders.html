@@ -452,10 +452,14 @@
         const formData = new FormData();
         formData.append('order_id', orderId);
         formData.append('status', newStatus);
+        formData.append('csrf_token', '{{ csrf_token() }}');
         
         fetch('/admin/update_order_status', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
         })
         .then(response => response.json())
         .then(data => {
