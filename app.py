@@ -22,7 +22,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask import url_for, redirect, session, flash
 import oauthlib.oauth2.rfc6749.errors
 from flask.sessions import SecureCookieSessionInterface
-from flask_dance.consumer.backend import BaseBackend
 import secrets
 
 # Allow OAuth over HTTP for development
