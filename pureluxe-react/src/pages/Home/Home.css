@@ -1,0 +1,480 @@
+@font-face {
+  font-family: 'Mula';
+  src: url('/fonts/Mula-Medium.woff2') format('woff2'),
+       url('/fonts/Mula-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --gold: #C6A664;
+  --black: #000000;
+  --dark-gold: #9A7B3B;
+  --light-gold: rgba(198, 166, 100, 0.1);
+}
+
+@keyframes patternMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 500px 500px;
+  }
+}
+
+/* Reset all backgrounds first */
+* {
+  background: transparent !important;
+}
+
+.home-container {
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--black) !important;
+  overflow: hidden;
+}
+
+/* Single pattern background */
+.pattern-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/islamic-pattern.jpg') !important;
+  background-repeat: repeat !important;
+  background-size: 500px !important;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+/* Content layers */
+.hero-section,
+.section {
+  position: relative;
+  z-index: 2;
+}
+
+.section {
+  padding: 80px 0;
+  margin: 0;
+  border: none;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 120px 0 80px;
+}
+
+.arabic-text {
+  font-family: 'Noto Sans Arabic', sans-serif !important;
+  color: var(--gold) !important;
+  font-size: 48px !important;
+  font-weight: 500 !important;
+  margin-bottom: 24px !important;
+}
+
+.main-title {
+  font-family: 'Mula', sans-serif !important;
+  font-size: 64px !important;
+  font-weight: 500 !important;
+  color: var(--gold) !important;
+  line-height: 1.2 !important;
+  margin-bottom: 24px !important;
+  letter-spacing: -0.5px !important;
+}
+
+.subtitle {
+  font-family: 'Mula', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  color: var(--gold) !important;
+  opacity: 0.9;
+  line-height: 1.8 !important;
+  letter-spacing: 0.2px !important;
+  margin-bottom: 48px !important;
+}
+
+/* Countdown Timer */
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.countdown-box {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 16px 24px;
+  min-width: 100px;
+}
+
+.countdown-box h4 {
+  font-family: 'Mula', sans-serif !important;
+  color: var(--gold) !important;
+  font-size: 32px !important;
+  font-weight: 500 !important;
+  margin-bottom: 4px !important;
+}
+
+.countdown-box p {
+  color: var(--gold) !important;
+  font-size: 14px !important;
+  opacity: 0.8;
+}
+
+/* CTA Buttons */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 80px;
+}
+
+.shop-button {
+  background-color: var(--gold) !important;
+  color: var(--black) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 16px !important;
+  padding: 12px 32px !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid var(--gold) !important;
+}
+
+.shop-button:hover {
+  background-color: transparent !important;
+  color: var(--gold) !important;
+}
+
+.offers-button {
+  border: 1px solid var(--gold) !important;
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 16px !important;
+  padding: 12px 32px !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.offers-button:hover {
+  background-color: var(--gold) !important;
+  color: var(--black) !important;
+}
+
+/* Sections */
+.section-title {
+  font-family: 'Mula', sans-serif !important;
+  color: var(--gold) !important;
+  font-size: 40px !important;
+  font-weight: 500 !important;
+  text-align: center;
+  margin-bottom: 16px !important;
+}
+
+.section-subtitle {
+  font-family: 'Mula', sans-serif !important;
+  color: var(--gold) !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  text-align: center;
+  opacity: 0.9;
+  margin-bottom: 48px !important;
+  line-height: 1.6 !important;
+}
+
+/* Cards with subtle contrast */
+.offer-card,
+.feature-card,
+.ingredient-card,
+.testimonial-card,
+.faq-card,
+.benefits-box,
+.countdown-box {
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+.offer-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  color: var(--gold) !important;
+  font-size: 32px !important;
+  margin-bottom: 16px !important;
+}
+
+.offer-card .MuiCardContent-root,
+.feature-card .MuiCardContent-root,
+.ingredient-card .MuiCardContent-root,
+.testimonial-card .MuiCardContent-root,
+.faq-card .MuiCardContent-root {
+  background: transparent !important;
+}
+
+.offer-card h6,
+.feature-card h6 {
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 20px !important;
+  margin-bottom: 12px !important;
+  text-transform: none !important;
+}
+
+.offer-card p,
+.feature-card p {
+  color: var(--gold) !important;
+  opacity: 0.9;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+/* Benefits Section */
+.benefits-section {
+  background: transparent !important;
+  border: none !important;
+}
+
+.benefits-box {
+  padding: 32px;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+}
+
+.benefits-box h5 {
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefits-list li {
+  color: var(--gold);
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.benefits-list li:before {
+  content: '•';
+  color: var(--gold);
+  margin-right: 12px;
+}
+
+.benefits-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* Ingredients Section */
+.ingredient-card {
+  text-align: center;
+  padding: 24px !important;
+}
+
+.ingredient-card img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}
+
+.ingredient-card h6 {
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 18px !important;
+  margin-bottom: 8px !important;
+}
+
+.ingredient-card p {
+  color: var(--gold) !important;
+  opacity: 0.8;
+  font-size: 14px !important;
+}
+
+/* Testimonials Section */
+.testimonial-card {
+  min-width: 320px;
+}
+
+.testimonial-text {
+  color: var(--gold) !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 24px !important;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-author img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.testimonial-author p {
+  color: var(--gold) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* FAQ Section */
+.faq-card {
+  height: auto !important;
+}
+
+.faq-question {
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 18px !important;
+  margin-bottom: 12px !important;
+}
+
+.faq-answer {
+  color: var(--gold) !important;
+  opacity: 0.8;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+/* Best Sellers Section */
+.bestsellers-section {
+  background: transparent !important;
+  border: none !important;
+}
+
+.bestseller-card {
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.bestseller-card .MuiCardContent-root {
+  background: transparent !important;
+  padding: 24px;
+  text-align: center;
+}
+
+.bestseller-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.bestseller-card h6 {
+  color: var(--gold) !important;
+  font-family: 'Mula', sans-serif !important;
+  font-size: 20px !important;
+  margin-bottom: 8px !important;
+}
+
+.bestseller-card p {
+  color: var(--gold) !important;
+  opacity: 0.9;
+  font-size: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+.bestseller-card .price {
+  color: var(--gold) !important;
+  font-size: 24px !important;
+  font-weight: 500 !important;
+  margin-bottom: 16px !important;
+}
+
+/* Ensure all sections are transparent */
+.section,
+.offers-section,
+.benefits-section,
+.hero-section,
+.bestsellers-section,
+.ingredients-section,
+.testimonials-section,
+.faq-section {
+  background: transparent !important;
+  border: none !important;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 992px) {
+  .main-title {
+    font-size: 48px !important;
+  }
+
+  .subtitle {
+    font-size: 18px !important;
+  }
+
+  .section-title {
+    font-size: 32px !important;
+  }
+
+  .countdown-box {
+    min-width: 80px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 80px 0 60px;
+  }
+
+  .arabic-text {
+    font-size: 36px !important;
+  }
+
+  .main-title {
+    font-size: 36px !important;
+  }
+
+  .subtitle {
+    font-size: 16px !important;
+  }
+
+  .countdown-container {
+    gap: 16px;
+  }
+
+  .countdown-box {
+    min-width: 70px;
+    padding: 8px 12px;
+  }
+
+  .countdown-box h4 {
+    font-size: 24px !important;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .shop-button,
+  .offers-button {
+    width: 100%;
+  }
+} 

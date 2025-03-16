@@ -1,4 +1,5 @@
 import os
+import psutil
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -23,6 +24,7 @@ from flask import url_for, redirect, session, flash
 import oauthlib.oauth2.rfc6749.errors
 from flask.sessions import SecureCookieSessionInterface
 import secrets
+import time
 
 # Allow OAuth over HTTP for development
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -736,6 +738,22 @@ TRANSLATIONS = {
         'View Order History': 'عرض سجل الطلبات',
     }
 }
+
+def log_memory_usage():
+    process = psutil.Process(os.getpid())
+    app.logger.info(f"Memory usage: {process.memory_info().rss / 1024 / 1024:.2f} MB")
+
+@app.before_request
+def before_request():
+    g.start = time.time()
+
+@app.after_request
+def after_request(response):
+    diff = time.time() - g.start
+    if diff > 0.5:  # Log slow requests (>500ms)
+        log_memory_usage()
+        app.logger.warning(f"Slow request: {request.path} took {diff:.2f}s")
+    return response
 
 @app.before_request
 def before_request():

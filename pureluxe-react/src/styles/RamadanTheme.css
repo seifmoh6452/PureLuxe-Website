@@ -1,0 +1,455 @@
+/* Enhanced Ramadan Theme Styles */
+:root {
+  --ramadan-gold: #C6A664;
+  --ramadan-gold-light: #E5C687;
+  --ramadan-dark: #000000;
+  --ramadan-deep: #000000;
+  --ramadan-light: #F5F0E6;
+  --ramadan-accent: #C6A664;
+  --ramadan-green: #2D8B7E;
+}
+
+/* Add pattern to body */
+body {
+  position: relative;
+  background-color: var(--ramadan-dark);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: var(--ramadan-gold);
+  font-family: 'Poppins', sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+
+.pattern-background {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.backdrop {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1;
+  left: 0;
+  top: 0;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Update section styles */
+section {
+  position: relative;
+  padding: 6rem 0;
+  color: var(--ramadan-gold);
+  overflow: visible;
+  background: transparent !important;
+  z-index: 3;
+}
+
+section::before {
+  display: none;
+}
+
+.hero,
+.features,
+.benefits,
+.ingredients,
+.testimonials,
+.ramadan-banner,
+.faq {
+  background: transparent !important;
+}
+
+/* Update card backgrounds for better visibility */
+.feature-card,
+.benefit-item,
+.ingredient-card,
+.testimonial-card,
+.faq-item,
+.offer-card {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover,
+.benefit-item:hover,
+.ingredient-card:hover,
+.testimonial-card:hover,
+.faq-item:hover,
+.offer-card:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+              0 0 20px rgba(198, 166, 100, 0.2);
+}
+
+/* Hero Section */
+.hero {
+  padding: 8rem 0;
+  text-align: center;
+  position: relative;
+  z-index: 3;
+  min-height: calc(100vh - 16rem);
+  display: flex;
+  align-items: center;
+}
+
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.ramadan-greeting {
+  font-family: 'Noto Naskh Arabic', serif !important;
+  font-size: 5rem !important;
+  color: var(--ramadan-gold) !important;
+  margin-bottom: 2rem !important;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+  animation: fadeIn 1s ease-out;
+  text-align: center;
+  font-weight: 700 !important;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  color: var(--ramadan-gold);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+  animation: fadeIn 1s ease-out 0.2s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--ramadan-gold);
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  animation: fadeIn 1s ease-out 0.4s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* Countdown Section */
+.ramadan-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 3rem 0;
+  position: relative;
+  padding: 2rem;
+  animation: fadeIn 1s ease-out 0.6s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.countdown-item {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  min-width: 140px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.countdown-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+              0 0 20px rgba(198, 166, 100, 0.2);
+}
+
+.countdown-number {
+  font-size: 3.5rem;
+  color: var(--ramadan-gold);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-label {
+  font-size: 1rem;
+  color: var(--ramadan-gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Features Section */
+.features {
+  position: relative;
+  padding: 6rem 0;
+  color: var(--ramadan-gold);
+  overflow: visible;
+  background: transparent;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.feature-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.feature-icon {
+  margin-bottom: 1.5rem;
+  color: var(--ramadan-gold);
+  font-size: 2.5rem;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+/* Special Offers Section */
+.ramadan-banner {
+  text-align: center;
+  padding: 6rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.ramadan-banner h2 {
+  font-family: 'Noto Naskh Arabic', serif;
+  color: var(--ramadan-gold);
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+  text-align: center;
+  width: 100%;
+}
+
+.ramadan-banner p {
+  color: var(--ramadan-gold);
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.ramadan-banner p:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--ramadan-gold-light);
+  transform: scale(1.02);
+  text-shadow: 0 4px 15px rgba(198, 166, 100, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ramadan-offers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.offer-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.offer-icon {
+  color: var(--ramadan-gold);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+}
+
+.offer-title {
+  color: var(--ramadan-gold);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.offer-description {
+  color: var(--ramadan-gold);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ramadan-countdown {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .countdown-item {
+    min-width: calc(50% - 1rem);
+    padding: 1.5rem 1rem;
+  }
+
+  .countdown-number {
+    font-size: 2.5rem;
+  }
+
+  .countdown-label {
+    font-size: 0.9rem;
+  }
+
+  .features-grid,
+  .ramadan-offers {
+    grid-template-columns: 1fr;
+  }
+
+  .ramadan-greeting {
+    font-size: 3rem !important;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ramadan-greeting {
+    font-size: 2.5rem !important;
+  }
+
+  .hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem !important;
+  }
+
+  .countdown-item {
+    min-width: 100%;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .feature-icon,
+  .offer-icon {
+    font-size: 2rem;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  font-family: 'Noto Naskh Arabic', serif;
+}
+
+[dir="rtl"] .hero-content {
+  text-align: center;
+}
+
+[dir="rtl"] .ramadan-greeting {
+  font-family: 'Noto Naskh Arabic', serif;
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .hero h1,
+[dir="rtl"] .section-title,
+[dir="rtl"] .offer-title,
+[dir="rtl"] .offer-description {
+  font-family: 'Noto Naskh Arabic', serif;
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .countdown-label {
+  font-family: 'Noto Naskh Arabic', serif;
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .countdown-number {
+  font-family: 'Noto Naskh Arabic', serif;
+}
+
+[dir="rtl"] .btn-primary,
+[dir="rtl"] .btn-outline {
+  font-family: 'Noto Naskh Arabic', serif;
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .offer-card {
+  text-align: center;
+}
+
+[dir="rtl"] .feature-card,
+[dir="rtl"] .benefit-item,
+[dir="rtl"] .ingredient-card,
+[dir="rtl"] .testimonial-card {
+  text-align: center;
+} 
