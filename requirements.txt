@@ -9,10 +9,4 @@ SQLAlchemy==2.0.21
 email-validator==2.0.0
 gunicorn==21.2.0
 google-cloud-translate==3.12.0
-flask-wtf==1.1.1
-psutil==5.9.5
-itsdangerous==2.1.2
-Flask-Dance==7.0.0
-SQLAlchemy-Utils==0.41.1
-oauthlib==3.2.2
-requests==2.31.0
+flask-wtf==1.1.1 
