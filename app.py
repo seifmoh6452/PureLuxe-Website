@@ -867,16 +867,89 @@ class Address(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Initialize database tables
+def init_db():
+    with app.app_context():
+        try:
+            # Create all tables
+            db.create_all()
+            app.logger.info("Database tables created successfully")
+            
+            # Check if Product table is empty
+            if Product.query.count() == 0:
+                # Add sample products
+                products = [
+                    Product(
+                        name="PureLuxe Body Wash",
+                        description="Luxurious body wash for all skin types",
+                        price=299.99,
+                        image_url="/static/images/products/body-wash.jpg",
+                        size="250 ml",
+                        stock=100,
+                        product_type="Body Care"
+                    ),
+                    Product(
+                        name="PureLuxe Clarifying Cleanser",
+                        description="Gentle yet effective facial cleanser",
+                        price=349.99,
+                        image_url="/static/images/products/cleanser.jpg",
+                        size="250 ml",
+                        stock=100,
+                        product_type="Face Care"
+                    ),
+                    Product(
+                        name="PureLuxe Hydration Boost",
+                        description="Intensive hydration treatment",
+                        price=399.99,
+                        image_url="/static/images/products/hydration.jpg",
+                        size="250 ml",
+                        stock=100,
+                        product_type="Face Care"
+                    ),
+                    Product(
+                        name="PureLuxe Intensive Treatment",
+                        description="Deep conditioning treatment",
+                        price=449.99,
+                        image_url="/static/images/products/treatment.jpg",
+                        size="250 ml",
+                        stock=100,
+                        product_type="Hair Care"
+                    )
+                ]
+                
+                for product in products:
+                    db.session.add(product)
+                
+                db.session.commit()
+                app.logger.info("Sample products added successfully")
+                
+        except Exception as e:
+            app.logger.error(f"Error initializing database: {str(e)}")
+            db.session.rollback()
+            raise
+
+# Initialize database
+init_db()
+
 # Routes
 @app.route('/')
 def home():
     try:
-        products = Product.query.all()
-        app.logger.info('Home page accessed successfully')
+        # Test database connection
+        db.session.execute('SELECT 1')
+        
+        # Get all products with error logging
+        try:
+            products = Product.query.all()
+            app.logger.info(f'Successfully retrieved {len(products)} products for home page')
+        except Exception as e:
+            app.logger.error(f'Error querying products: {str(e)}')
+            raise
+            
         return render_template('index.html', products=products)
     except Exception as e:
-        app.logger.error(f'Error accessing home page: {str(e)}')
-        return render_template('error.html', error='An error occurred while loading the home page. Please try again later.'), 500
+        app.logger.error(f'Home page error: {str(e)}')
+        return render_template('error.html', error='Database connection error. Please try again later.'), 500
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
@@ -1447,12 +1520,21 @@ def cart_count():
 @app.route('/shop')
 def shop():
     try:
-        products = Product.query.all()
-        app.logger.info('Shop page accessed successfully')
+        # Test database connection
+        db.session.execute('SELECT 1')
+        
+        # Get all products with error logging
+        try:
+            products = Product.query.all()
+            app.logger.info(f'Successfully retrieved {len(products)} products for shop page')
+        except Exception as e:
+            app.logger.error(f'Error querying products: {str(e)}')
+            raise
+            
         return render_template('shop.html', products=products)
     except Exception as e:
-        app.logger.error(f'Error accessing shop page: {str(e)}')
-        return render_template('error.html', error='An error occurred while loading the shop page. Please try again later.'), 500
+        app.logger.error(f'Shop page error: {str(e)}')
+        return render_template('error.html', error='Database connection error. Please try again later.'), 500
 
 @app.route('/api/products/<int:product_id>')
 def get_product(product_id):
