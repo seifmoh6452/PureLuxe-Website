@@ -119,18 +119,18 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
 
 # Database configuration
-database_url = os.getenv('DATABASE_URL')
-if database_url and database_url.startswith("postgres://"):
+database_url = os.getenv('DATABASE_URL', 'sqlite:///shop.db')
+if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///shop.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_size': 20,
+    'pool_size': 5,
     'pool_recycle': 300,
     'pool_pre_ping': True,
     'pool_timeout': 30,
-    'max_overflow': 10
+    'max_overflow': 2
 }
 
 # Initialize extensions
@@ -870,8 +870,13 @@ def load_user(user_id):
 # Routes
 @app.route('/')
 def home():
-    products = Product.query.all()
-    return render_template('index.html', products=products)
+    try:
+        products = Product.query.all()
+        app.logger.info('Home page accessed successfully')
+        return render_template('index.html', products=products)
+    except Exception as e:
+        app.logger.error(f'Error accessing home page: {str(e)}')
+        return render_template('error.html', error='An error occurred while loading the home page. Please try again later.'), 500
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
@@ -1441,8 +1446,13 @@ def cart_count():
 
 @app.route('/shop')
 def shop():
-    products = Product.query.all()
-    return render_template('shop.html', products=products)
+    try:
+        products = Product.query.all()
+        app.logger.info('Shop page accessed successfully')
+        return render_template('shop.html', products=products)
+    except Exception as e:
+        app.logger.error(f'Error accessing shop page: {str(e)}')
+        return render_template('error.html', error='An error occurred while loading the shop page. Please try again later.'), 500
 
 @app.route('/api/products/<int:product_id>')
 def get_product(product_id):
