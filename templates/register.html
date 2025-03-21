@@ -1,0 +1,606 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Create Account') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    body {
+        position: relative;
+        background: var(--ramadan-dark);
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 0.2;
+        z-index: 1;
+    }
+
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 2;
+        background: transparent;
+    }
+
+    .auth-page .container {
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-content {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1rem;
+        padding: 3rem;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .auth-header h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        text-shadow: 0 2px 10px rgba(198, 166, 100, 0.3);
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+    }
+
+    .auth-header p {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        color: var(--ramadan-gold);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--ramadan-gold-light);
+        box-shadow: 0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: var(--ramadan-gold);
+        opacity: 0.6;
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--ramadan-gold);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: var(--ramadan-gold-light);
+    }
+
+    .password-requirements {
+        margin-top: 0.8rem;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 0.8rem;
+        border: 1px solid var(--ramadan-gold);
+    }
+
+    .password-requirements p {
+        color: var(--ramadan-gold);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .password-requirements ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .password-requirements li {
+        color: var(--ramadan-gold);
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+        padding-left: 1.5rem;
+        position: relative;
+        opacity: 0.9;
+    }
+
+    .password-requirements li::before {
+        content: '•';
+        position: absolute;
+        left: 0.5rem;
+        color: var(--ramadan-gold);
+    }
+
+    .password-requirements li.met {
+        color: var(--ramadan-gold-light);
+    }
+
+    .password-requirements li.met::before {
+        content: '✓';
+        color: var(--ramadan-gold-light);
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        color: var(--ramadan-gold);
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 1rem;
+        gap: 0.8rem;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        position: relative;
+        margin: 0.2rem 0 0 0;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-label input[type="checkbox"]:checked {
+        background: var(--ramadan-gold);
+        border-color: var(--ramadan-gold);
+    }
+
+    .checkbox-label input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        color: var(--ramadan-dark);
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .checkbox-label input[type="checkbox"]:hover {
+        border-color: var(--ramadan-gold-light);
+        background: rgba(198, 166, 100, 0.1);
+    }
+
+    .checkbox-label span {
+        color: var(--ramadan-gold);
+        line-height: 1.5;
+    }
+
+    .checkbox-label a {
+        color: var(--ramadan-gold-light);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-label a:hover {
+        color: var(--ramadan-gold);
+        text-decoration: underline;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+    }
+
+    .btn-primary:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+                    0 0 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .auth-divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: var(--ramadan-gold);
+        opacity: 0.3;
+    }
+
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    .auth-divider span {
+        background: transparent;
+        padding: 0 1rem;
+        color: var(--ramadan-gold);
+        font-size: 0.9rem;
+    }
+
+    .social-login {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-social:hover {
+        background: rgba(198, 166, 100, 0.1);
+        border-color: var(--ramadan-gold-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .auth-footer p {
+        color: var(--ramadan-gold);
+        font-size: 0.95rem;
+    }
+
+    .auth-footer a {
+        color: var(--ramadan-gold-light);
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .auth-footer a:hover {
+        color: var(--ramadan-gold);
+        text-decoration: underline;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .auth-page {
+            padding: 2rem 1rem;
+        }
+
+        .auth-content {
+            padding: 2rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    [dir="rtl"] .auth-content {
+        text-align: right;
+    }
+
+    [dir="rtl"] .password-toggle {
+        right: auto;
+        left: 1rem;
+    }
+
+    [dir="rtl"] .checkbox-label {
+        flex-direction: row-reverse;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h1>{{ translate('Create Account') }}</h1>
+                <p>{{ translate('Join PureLuxe to start shopping') }}</p>
+            </div>
+
+                <div class="social-login">
+                <button type="button" class="btn-social btn-google">
+                    <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    {{ translate('Continue with Google') }}
+                    </button>
+                <button type="button" class="btn-social btn-facebook">
+                    <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#4267B2"/>
+                    </svg>
+                    {{ translate('Continue with Facebook') }}
+                    </button>
+                </div>
+
+            <div class="auth-divider">
+                <span>{{ translate('or') }}</span>
+                </div>
+
+                <form class="auth-form" action="{{ url_for('register') }}" method="POST" id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                        <label for="firstName">{{ translate('First Name') }}</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                        <label for="lastName">{{ translate('Last Name') }}</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="email">{{ translate('Email Address') }}</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="password">{{ translate('Password') }}</label>
+                        <div class="password-input">
+                        <input type="password" id="password" name="password" class="form-control" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-requirements">
+                        <p>{{ translate('Password must contain:') }}</p>
+                        <ul>
+                            <li data-requirement="length">{{ translate('At least 8 characters') }}</li>
+                            <li data-requirement="letter">{{ translate('At least one letter') }}</li>
+                            <li data-requirement="number">{{ translate('At least one number') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="confirmPassword">{{ translate('Confirm Password') }}</label>
+                        <div class="password-input">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="newsletter" checked>
+                        <span>{{ translate('Subscribe to our newsletter for exclusive offers') }}</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label terms-checkbox">
+                            <input type="checkbox" name="terms" id="terms" required>
+                        <span>
+                            {{ translate('I agree to the') }}
+                            <a href="{{ url_for('terms') }}" target="_blank">{{ translate('Terms of Service') }}</a>
+                            {{ translate('and') }}
+                            <a href="{{ url_for('privacy') }}" target="_blank">{{ translate('Privacy Policy') }}</a>
+                        </span>
+                        </label>
+                    </div>
+
+                <button type="submit" class="btn btn-primary">{{ translate('Create Account') }}</button>
+                </form>
+
+            <div class="auth-footer">
+                <p>
+                    {{ translate('Already have an account?') }}
+                    <a href="{{ url_for('login') }}">{{ translate('Sign in') }}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const button = field.nextElementSibling;
+        const icon = button.querySelector('i');
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    // Password validation
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const requirements = {
+        length: str => str.length >= 8,
+        letter: str => /[A-Za-z]/.test(str),
+        number: str => /\d/.test(str)
+    };
+    
+    function validatePassword(password) {
+        let isValid = true;
+        
+        // Update requirement indicators
+        Object.entries(requirements).forEach(([requirement, test]) => {
+            const element = document.querySelector(`[data-requirement="${requirement}"]`);
+            const meetsRequirement = test(password);
+            if (element) {
+                element.classList.toggle('met', meetsRequirement);
+            }
+            if (!meetsRequirement) {
+                isValid = false;
+            }
+        });
+        
+        return isValid;
+    }
+    
+    passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value;
+        validatePassword(password);
+        
+        // Check password match if confirm password has value
+        if (confirmPasswordInput.value) {
+            validatePasswordMatch();
+        }
+    });
+    
+    function validatePasswordMatch() {
+        const match = passwordInput.value === confirmPasswordInput.value;
+        confirmPasswordInput.classList.toggle('is-invalid', !match);
+        confirmPasswordInput.classList.toggle('is-valid', match);
+        return match;
+    }
+    
+    confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+    
+    // Form validation
+    const registerForm = document.getElementById('register-form');
+    registerForm.addEventListener('submit', (e) => {
+        const password = passwordInput.value;
+        
+        // Validate password requirements
+        const isPasswordValid = validatePassword(password);
+        
+        // Validate password match
+        const isPasswordMatch = validatePasswordMatch();
+        
+        // Validate terms acceptance
+        const termsCheckbox = document.querySelector('input[name="terms"]');
+        const isTermsAccepted = termsCheckbox.checked;
+        
+        if (!isPasswordValid || !isPasswordMatch || !isTermsAccepted) {
+            e.preventDefault();
+            
+            if (!isPasswordValid) {
+                passwordInput.classList.add('is-invalid');
+                passwordInput.focus();
+            } else if (!isPasswordMatch) {
+                confirmPasswordInput.classList.add('is-invalid');
+                confirmPasswordInput.focus();
+            } else if (!isTermsAccepted) {
+                termsCheckbox.focus();
+            }
+        }
+    });
+</script>
+{% endblock %} 

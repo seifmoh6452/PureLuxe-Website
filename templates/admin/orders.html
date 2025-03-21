@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translate('Orders Management') }} - PureLuxe{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --ramadan-gold: #C6A664;
+        --ramadan-gold-light: #E5C687;
+        --ramadan-dark: #000000;
+        --ramadan-deep: #000000;
+        --ramadan-light: #F5F0E6;
+        --ramadan-accent: #C6A664;
+    }
+
+    .admin-orders {
+        padding: 8rem 0 4rem;
+        min-height: 100vh;
+        position: relative;
+        z-index: 2;
+    }
+
+    .admin-orders::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{{ url_for('static', filename='images/ramadan/islamic-pattern.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        opacity: 0.15;
+        z-index: 1;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .admin-header h1 {
+        font-size: 2.5rem;
+        color: var(--ramadan-gold);
+        margin: 0;
+        font-weight: 700;
+        text-shadow: 0 2px 15px rgba(198, 166, 100, 0.4);
+        background: linear-gradient(45deg, var(--ramadan-gold), var(--ramadan-gold-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .admin-btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-logout {
+        background: transparent;
+        border: 2px solid var(--ramadan-gold);
+        color: var(--ramadan-gold);
+    }
+
+    .btn-logout:hover {
+        background: var(--ramadan-gold);
+        color: var(--ramadan-dark);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(198, 166, 100, 0.2);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: var(--ramadan-gold);
+        margin-bottom: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--ramadan-gold);
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 15px rgba(198, 166, 100, 0.4);
+    }
+
+    .stat-label {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+
+    .orders-grid {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .order-card {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid var(--ramadan-gold);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(198, 166, 100, 0.2);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .order-id {
+        font-size: 1.2rem;
+        color: var(--ramadan-gold);
+        font-weight: 600;
+    }
+
+    .order-date {
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+    }
+
+    .order-status {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .order-status:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(198, 166, 100, 0.2);
+    }
+
+    .status-pending {
+        background: rgba(198, 166, 100, 0.1);
+        color: var(--ramadan-gold);
+        border: 1px solid var(--ramadan-gold);
+    }
+
+    .status-completed {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+        border: 1px solid #2ecc71;
+    }
+
+    .status-loading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .status-loading::after {
+        content: '';
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid var(--ramadan-gold);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .toast {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.9);
+        color: var(--ramadan-gold);
+        border: 1px solid var(--ramadan-gold);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+    }
+
+    .toast.show {
+        transform: translateX(0);
+    }
+
+    .toast-success {
+        border-color: #2ecc71;
+        color: #2ecc71;
+    }
+
+    .toast-error {
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+
+    .order-items {
+        margin-bottom: 2rem;
+    }
+
+    .order-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1.5rem;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(198, 166, 100, 0.1);
+    }
+
+    .item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item-details h3 {
+        color: var(--ramadan-gold);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .item-meta {
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        color: var(--ramadan-gold);
+        font-weight: 600;
+    }
+
+    .order-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(198, 166, 100, 0.3);
+    }
+
+    .order-total {
+        color: var(--ramadan-gold);
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .shipping-address {
+        color: var(--ramadan-gold);
+        opacity: 0.8;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="admin-orders">
+    <div class="container">
+        <div class="admin-header">
+            <h1>{{ translate('Orders Management') }}</h1>
+            <div class="admin-actions">
+                <form action="{{ url_for('clear_orders') }}" method="POST" style="display: inline;" onsubmit="return confirm('{{ translate('Are you sure you want to clear all orders? This action cannot be undone.') }}');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="admin-btn btn-danger" style="background: rgba(220, 53, 69, 0.1); border: 2px solid #dc3545; color: #dc3545;">
+                        <i class="fas fa-trash-alt"></i>
+                        {{ translate('Clear All Orders') }}
+                    </button>
+                </form>
+                <a href="{{ url_for('admin_logout') }}" class="admin-btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    {{ translate('Logout') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-value">{{ orders|length }}</div>
+                <div class="stat-label">{{ translate('Total Orders') }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-value">{{ "%.2f"|format(total_revenue|default(0) / 30.90) }}</div>
+                <div class="stat-label">{{ translate('Total Revenue (EGP)') }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value">{{ pending_orders|default(0) }}</div>
+                <div class="stat-label">{{ translate('Pending Orders') }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value">{{ completed_orders|default(0) }}</div>
+                <div class="stat-label">{{ translate('Completed Orders') }}</div>
+            </div>
+        </div>
+
+        <div class="orders-grid">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-id">{{ translate('Order #') }}{{ order.id }}</span>
+                    <span class="order-date">{{ order.date_ordered.strftime('%B %d, %Y') }}</span>
+                    <span class="order-status status-{{ order.status }}" 
+                          data-order-id="{{ order.id }}" 
+                          data-current-status="{{ order.status }}"
+                          onclick="toggleOrderStatus(this)">
+                        <i class="fas fa-{% if order.status == 'completed' %}check-circle{% else %}clock{% endif %}"></i>
+                        {{ translate(order.status|title) }}
+                    </span>
+                </div>
+
+                <div class="order-items">
+                    {% for item in order.items %}
+                    {% set product = Product.query.get(item.product_id) %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" 
+                                 alt="{{ product.name }}">
+                        </div>
+                        <div class="item-details">
+                            <h3>{{ product.name }}</h3>
+                            <div class="item-meta">
+                                <span>{{ translate('Size:') }} {{ product.size }}</span>
+                                <span>{{ translate('Quantity:') }} {{ item.quantity }}</span>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            {{ "%.2f"|format(item.price / 30.90) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="order-footer">
+                    <div class="shipping-address">
+                        <strong>{{ translate('Shipping Address:') }}</strong><br>
+                        {% for line in order.shipping_address.split('\n') %}
+                            {{ line }}<br>
+                        {% endfor %}
+                    </div>
+                    <div class="order-total">
+                        {{ translate('Total:') }} {{ "%.2f"|format(order.total / 30.90 + 50) }} {% if g.lang == 'ar' %}ج.م{% else %}EGP{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function updateStatistics(stats) {
+        document.querySelector('.stat-value:nth-child(2)').textContent = stats.total_revenue;
+        document.querySelector('.stat-value:nth-child(3)').textContent = stats.pending_orders;
+        document.querySelector('.stat-value:nth-child(4)').textContent = stats.completed_orders;
+    }
+
+    function toggleOrderStatus(element) {
+        const orderId = element.dataset.orderId;
+        const currentStatus = element.dataset.currentStatus;
+        const newStatus = currentStatus === 'pending' ? 'completed' : 'pending';
+        
+        element.classList.add('status-loading');
+        
+        const formData = new FormData();
+        formData.append('order_id', orderId);
+        formData.append('status', newStatus);
+        
+        fetch('/admin/update_order_status', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                element.className = `order-status status-${newStatus}`;
+                element.dataset.currentStatus = newStatus;
+                
+                const icon = newStatus === 'completed' ? 'check-circle' : 'clock';
+                const statusText = newStatus === 'completed' ? 
+                    '{{ translate('Completed') }}' : 
+                    '{{ translate('Pending') }}';
+                
+                element.innerHTML = '<i class="fas fa-' + icon + '"></i> ' + statusText;
+                
+                updateStatistics(data.stats);
+                showToast('{{ translate('Order status updated successfully') }}');
+            } else {
+                throw new Error(data.message || '{{ translate('Failed to update order status') }}');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast(error.message, 'error');
+            element.className = `order-status status-${currentStatus}`;
+        })
+        .finally(() => {
+            element.classList.remove('status-loading');
+        });
+    }
+</script>
+{% endblock %} 

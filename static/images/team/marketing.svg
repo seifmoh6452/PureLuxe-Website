@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <circle cx="75" cy="75" r="75" fill="#F7FAFC"/>
+    
+    <!-- Elegant Pattern -->
+    <path d="M0 75 C30 95, 120 95, 150 75" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 65 C30 85, 120 85, 150 65" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 85 C30 105, 120 105, 150 85" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <!-- Professional Silhouette -->
+    <circle cx="75" cy="55" r="25" fill="#2C5282"/>
+    <path d="M45 140 C45 90 105 90 105 140" fill="#2C5282"/>
+    
+    <!-- Professional Attire -->
+    <path d="M50 95 L75 105 L100 95" fill="none" stroke="#4299E1" stroke-width="1"/>
+    <path d="M45 95 L45 140" stroke="#4299E1" stroke-width="1"/>
+    <path d="M105 95 L105 140" stroke="#4299E1" stroke-width="1"/>
+    
+    <!-- Marketing Details -->
+    <path d="M60 45 Q75 35 90 45" fill="none" stroke="#4299E1" stroke-width="1.5"/>
+    <circle cx="65" cy="50" r="2" fill="#63B3ED"/>
+    <circle cx="85" cy="50" r="2" fill="#63B3ED"/>
+    
+    <!-- Chart Symbol -->
+    <path d="M60 110 L70 105 L80 115 L90 110" stroke="#63B3ED" stroke-width="1.5" fill="none"/>
+    <circle cx="60" cy="110" r="1.5" fill="#63B3ED"/>
+    <circle cx="70" cy="105" r="1.5" fill="#63B3ED"/>
+    <circle cx="80" cy="115" r="1.5" fill="#63B3ED"/>
+    <circle cx="90" cy="110" r="1.5" fill="#63B3ED"/>
+</svg> 

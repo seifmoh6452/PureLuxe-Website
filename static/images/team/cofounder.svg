@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <circle cx="75" cy="75" r="75" fill="#F7FAFC"/>
+    
+    <!-- Elegant Pattern -->
+    <path d="M0 75 C30 95, 120 95, 150 75" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 65 C30 85, 120 85, 150 65" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 85 C30 105, 120 105, 150 85" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <!-- Professional Silhouette -->
+    <circle cx="75" cy="55" r="25" fill="#2C5282"/>
+    <path d="M45 140 C45 90 105 90 105 140" fill="#2C5282"/>
+    
+    <!-- Professional Attire -->
+    <path d="M50 95 L75 105 L100 95" fill="none" stroke="#4299E1" stroke-width="1"/>
+    <path d="M45 95 L45 140" stroke="#4299E1" stroke-width="1"/>
+    <path d="M105 95 L105 140" stroke="#4299E1" stroke-width="1"/>
+    
+    <!-- Co-founder Details -->
+    <path d="M65 45 Q75 35 85 45" fill="none" stroke="#4299E1" stroke-width="1.5"/>
+    <path d="M60 50 Q75 40 90 50" fill="none" stroke="#4299E1" stroke-width="1.5"/>
+    
+    <!-- Innovation Symbol -->
+    <path d="M70 110 Q75 105 80 110" stroke="#63B3ED" stroke-width="1.5" fill="none"/>
+    <path d="M65 115 Q75 110 85 115" stroke="#63B3ED" stroke-width="1.5" fill="none"/>
+    <path d="M70 120 Q75 115 80 120" stroke="#63B3ED" stroke-width="1.5" fill="none"/>
+    <circle cx="75" cy="115" r="8" fill="none" stroke="#63B3ED" stroke-width="1"/>
+</svg> 
