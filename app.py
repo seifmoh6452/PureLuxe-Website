@@ -25,6 +25,7 @@ import oauthlib.oauth2.rfc6749.errors
 from flask.sessions import SecureCookieSessionInterface
 import secrets
 import time
+from urllib.parse import quote_plus
 
 # Allow OAuth over HTTP for development
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -120,8 +121,19 @@ app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
 
 # Database configuration
 database_url = os.getenv('DATABASE_URL', 'sqlite:///shop.db')
+
+# Handle special characters in password
 if database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
+    # Split the URL into components
+    user_pass, host_db = database_url.split("@", 1)
+    protocol, credentials = user_pass.split("://", 1)
+    username, password = credentials.split(":", 1)
+    
+    # URL encode the password
+    password = quote_plus(password)
+    
+    # Reconstruct the URL with encoded password and postgresql:// protocol
+    database_url = f"postgresql://{username}:{password}@{host_db}"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
