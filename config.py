@@ -27,12 +27,11 @@ class Config:
     }
 
     # Mail
-    MAIL_SERVER = 'smtp.zoho.com'
-    MAIL_PORT = 587
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(os.getenv('MAIL_PORT', '587'))
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'support@pure-luxe.shop'
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = 'support@pure-luxe.shop'
 
     # Stripe
     STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
