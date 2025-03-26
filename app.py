@@ -1,4 +1,5 @@
 import os
+import psutil
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -14,6 +15,20 @@ import sys
 from functools import wraps
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from itsdangerous import URLSafeTimedSerializer
+from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
+from flask_dance.consumer import oauth_authorized
+from sqlalchemy.orm.exc import NoResultFound
+from flask import url_for, redirect, session, flash
+import oauthlib.oauth2.rfc6749.errors
+from flask.sessions import SecureCookieSessionInterface
+import secrets
+import time
+
+# Allow OAuth over HTTP for development
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 # Load environment variables
 load_dotenv()
@@ -724,6 +739,22 @@ TRANSLATIONS = {
     }
 }
 
+def log_memory_usage():
+    process = psutil.Process(os.getpid())
+    app.logger.info(f"Memory usage: {process.memory_info().rss / 1024 / 1024:.2f} MB")
+
+@app.before_request
+def before_request():
+    g.start = time.time()
+
+@app.after_request
+def after_request(response):
+    diff = time.time() - g.start
+    if diff > 0.5:  # Log slow requests (>500ms)
+        log_memory_usage()
+        app.logger.warning(f"Slow request: {request.path} took {diff:.2f}s")
+    return response
+
 @app.before_request
 def before_request():
     # Get language from URL parameter or session or default to English
@@ -753,6 +784,13 @@ def internal_error(error):
     app.logger.error(f'Server Error: {error}')
     return render_template('500.html'), 500
 
+# Add OAuth error handler
+@app.errorhandler(oauthlib.oauth2.rfc6749.errors.OAuth2Error)
+def handle_oauth2_error(error):
+    app.logger.error(f"OAuth2 error: {str(error)}")
+    flash("An error occurred during authentication. Please try again.", "error")
+    return redirect(url_for('login'))
+
 # Models
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -760,6 +798,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     password_hash = db.Column(db.String(128))
+    verified = db.Column(db.Boolean, default=False)
     orders = db.relationship('Order', backref='user', lazy=True)
     addresses = db.relationship('Address', backref='user', lazy=True)
 
@@ -769,6 +808,19 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def generate_verification_token(self):
+        serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        return serializer.dumps(self.email, salt='email-verification')
+
+    @staticmethod
+    def verify_token(token, expiration=3600):
+        serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        try:
+            email = serializer.loads(token, salt='email-verification', max_age=expiration)
+            return email
+        except:
+            return None
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -777,6 +829,7 @@ class Product(db.Model):
     image_url = db.Column(db.String(200))
     size = db.Column(db.String(20))
     stock = db.Column(db.Integer, default=0)
+    product_type = db.Column(db.String(50))
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -959,6 +1012,41 @@ def update_cart():
         flash('Error updating cart', 'error')
         return redirect(url_for('cart'))
 
+def send_order_confirmation(order):
+    try:
+        # Get order items and their details
+        order_items = []
+        for item in order.items:
+            product = Product.query.get(item.product_id)
+            order_items.append({
+                'name': product.name,
+                'quantity': item.quantity,
+                'price': item.price / 30.90,
+                'subtotal': (item.price * item.quantity) / 30.90
+            })
+
+        # Create the email message
+        msg = Message(
+            subject=f'Order Confirmation - Order #{order.id}',
+            recipients=[current_user.email]
+        )
+        
+        # Render the email template
+        msg.html = render_template(
+            'email/order_confirmation.html',
+            order=order,
+            items=order_items,
+            user=current_user,
+            shipping_address=order.shipping_address.split('\n')
+        )
+        
+        # Send the email
+        mail.send(msg)
+        app.logger.info(f'Order confirmation email sent for order {order.id}')
+        
+    except Exception as e:
+        app.logger.error(f'Error sending order confirmation email: {str(e)}')
+
 @app.route('/checkout', methods=['GET', 'POST'])
 @login_required
 def checkout():
@@ -1034,6 +1122,10 @@ def checkout():
             try:
                 db.session.commit()
                 app.logger.info(f'Order {order.id} created successfully')
+                
+                # Send order confirmation email
+                send_order_confirmation(order)
+                
                 return jsonify({
                     'status': 'success',
                     'redirect_url': url_for('order_success', order_id=order.id)
@@ -1074,6 +1166,10 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
+            if not user.verified:
+                flash('Please verify your email address before logging in. Check your inbox for the verification link.', 'error')
+                return redirect(url_for('login'))
+            
             login_user(user)
             return redirect(url_for('home'))
         
@@ -1109,9 +1205,6 @@ def register():
             terms = request.form.get('terms')
             
             app.logger.info(f'Registration attempt for email: {email}')
-            
-            # Log received data (excluding password)
-            app.logger.info(f'Received registration data - Email: {email}, First Name: {first_name}, Last Name: {last_name}, Terms Accepted: {terms}')
             
             # Validate form data
             if not all([email, password, confirm_password, first_name, last_name, terms]):
@@ -1153,19 +1246,44 @@ def register():
             user = User(
                 email=email,
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
+                verified=False
             )
             user.set_password(password)
             
-            # Add user to database
-            db.session.add(user)
-            db.session.commit()
-            app.logger.info(f'New user registered successfully: {email}')
+            # Generate verification token
+            token = user.generate_verification_token()
+            verification_url = url_for('verify_email', token=token, _external=True)
             
-            # Log in the user
-            login_user(user)
-            flash('Account created successfully!', 'success')
-            return redirect(url_for('home'))
+            try:
+                # Send verification email
+                msg = Message(
+                    subject='Verify Your PureLuxe Account',
+                    recipients=[email],
+                    sender='support@pure-luxe.shop'
+                )
+                msg.html = render_template(
+                    'email/verify_email.html',
+                    user=user,
+                    verification_url=verification_url,
+                    now=datetime.now()
+                )
+                mail.send(msg)
+                
+                # Now add user to database
+                db.session.add(user)
+                db.session.commit()
+                
+                app.logger.info(f'New user registered successfully: {email}')
+                # Store email in session for verification page
+                session['verification_email'] = email
+                return redirect(url_for('verification_pending'))
+                
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f'Error sending verification email: {str(e)}')
+                flash('An error occurred while sending the verification email. Please try again.', 'error')
+                return redirect(url_for('register'))
             
         except Exception as e:
             db.session.rollback()
@@ -1174,6 +1292,82 @@ def register():
             return redirect(url_for('register'))
     
     return render_template('register.html')
+
+@app.route('/verification_pending')
+def verification_pending():
+    email = session.get('verification_email')
+    if not email:
+        return redirect(url_for('register'))
+    return render_template('verification_pending.html', email=email)
+
+@app.route('/verify_email/<token>')
+def verify_email(token):
+    try:
+        email = User.verify_token(token)
+        if email is None:
+            flash('Invalid or expired verification link', 'error')
+            return redirect(url_for('login'))
+        
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            flash('User not found', 'error')
+            return redirect(url_for('login'))
+        
+        if user.verified:
+            flash('Email already verified. Please login.', 'info')
+            return redirect(url_for('login'))
+        
+        user.verified = True
+        db.session.commit()
+        
+        # Store email in session for verification pending page
+        session['verification_email'] = email
+        
+        # Redirect to verification success page
+        return render_template('verification_success.html')
+        
+    except Exception as e:
+        app.logger.error(f'Error during email verification: {str(e)}')
+        flash('An error occurred during verification. Please try again.', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/resend_verification', methods=['POST'])
+@login_required
+def resend_verification():
+    try:
+        user = current_user
+        if user.verified:
+            return jsonify({'status': 'error', 'message': 'Email already verified'})
+
+        # Generate new verification token
+        token = user.generate_verification_token()
+        verification_url = url_for('verify_email', token=token, _external=True)
+
+        # Send verification email
+        msg = Message(
+            subject='Verify Your PureLuxe Account',
+            recipients=[user.email],
+            sender='support@pure-luxe.shop'
+        )
+        msg.html = render_template(
+            'email/verify_email.html',
+            user=user,
+            verification_url=verification_url,
+            now=datetime.now()
+        )
+        mail.send(msg)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Verification email resent successfully'
+        })
+
+    except Exception as e:
+        app.logger.error(f'Error resending verification email: {str(e)}')
+        return jsonify({
+            'status': 'error',
+            'message': 'Error resending verification email'
+        }), 500
 
 @app.route('/logout')
 @login_required
@@ -1263,29 +1457,47 @@ def about():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        subject = request.form.get('subject')
-        message = request.form.get('message')
-        
         try:
-            # Create email message
-            msg = Message(
-                subject=f'Contact Form: {subject}',
-                sender=email,
-                recipients=[app.config['MAIL_USERNAME']],
-                body=f'From: {name} <{email}>\n\n{message}'
+            # Get form data
+            name = request.form.get('name')
+            email = request.form.get('email')
+            subject = request.form.get('subject')
+            message = request.form.get('message')
+            
+            if not all([name, email, subject, message]):
+                flash('Please fill in all fields', 'error')
+                return redirect(url_for('contact'))
+            
+            # Create email message to support
+            support_msg = Message(
+                subject=f'New Contact Form Submission: {subject}',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=['support@pure-luxe.shop'],  # Your support email
+                body=f'''New contact form submission:
+                
+From: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+'''
             )
-            mail.send(msg)
+            mail.send(support_msg)
             
             # Send confirmation email to user
             confirmation = Message(
                 subject='Thank you for contacting PureLuxe',
                 sender=app.config['MAIL_USERNAME'],
                 recipients=[email],
-                body=f'Dear {name},\n\nThank you for contacting us. We have received your message and will respond within 24 hours.\n\nBest regards,\nThe PureLuxe Team'
+                html=render_template(
+                    'email/contact_confirmation.html',
+                    name=name,
+                    message=message
+                )
             )
             mail.send(confirmation)
+            
             
             flash('Your message has been sent successfully!', 'success')
         except Exception as e:
@@ -1358,27 +1570,81 @@ def admin_orders():
                          pending_orders=pending_orders,
                          completed_orders=completed_orders)
 
+def send_order_status_update(order, new_status):
+    try:
+        # Get order items and their details
+        order_items = []
+        for item in order.items:
+            product = Product.query.get(item.product_id)
+            order_items.append({
+                'name': product.name,
+                'quantity': item.quantity,
+                'price': item.price / 30.90,
+                'subtotal': (item.price * item.quantity) / 30.90
+            })
+
+        # Get the user
+        user = User.query.get(order.user_id)
+        
+        status_messages = {
+            'pending': 'Your order is being processed',
+            'completed': 'Your order has been completed and is out for delivery',
+            'cancelled': 'Your order has been cancelled'
+        }
+
+        # Create the email message
+        msg = Message(
+            subject=f'Order #{order.id} Status Update - {status_messages.get(new_status, "Status Updated")}',
+            recipients=[user.email],
+            sender='support@pure-luxe.shop'
+        )
+        
+        # Render the email template
+        msg.html = render_template(
+            'email/order_status_update.html',
+            order=order,
+            items=order_items,
+            user=user,
+            new_status=new_status,
+            status_message=status_messages.get(new_status, "Status Updated"),
+            shipping_address=order.shipping_address.split('\n')
+        )
+        
+        # Send the email
+        mail.send(msg)
+        app.logger.info(f'Order status update email sent for order {order.id}')
+        
+    except Exception as e:
+        app.logger.error(f'Error sending order status update email: {str(e)}')
+
 @app.route('/admin/update_order_status', methods=['POST'])
 @admin_required
 def update_order_status():
-    order_id = request.form.get('order_id')
-    new_status = request.form.get('status')
-    
-    if not order_id or not new_status:
-        return jsonify({'status': 'error', 'message': 'Missing required data'})
-    
     try:
+        order_id = request.form.get('order_id')
+        new_status = request.form.get('status')
+        
+        if not order_id or not new_status:
+            return jsonify({'status': 'error', 'message': 'Missing required data'})
+        
         order = Order.query.get(order_id)
         if not order:
             return jsonify({'status': 'error', 'message': 'Order not found'})
         
+        old_status = order.status
         order.status = new_status
         db.session.commit()
+        
+        # Send status update email
+        if old_status != new_status:  # Only send email if status actually changed
+            send_order_status_update(order, new_status)
         
         # Calculate updated statistics
         total_revenue = sum([order.total for order in Order.query.all()])
         pending_orders = Order.query.filter_by(status='pending').count()
         completed_orders = Order.query.filter_by(status='completed').count()
+        
+        app.logger.info(f'Successfully updated order {order_id} status to {new_status}')
         
         return jsonify({
             'status': 'success',
@@ -1392,6 +1658,7 @@ def update_order_status():
         
     except Exception as e:
         db.session.rollback()
+        app.logger.error(f'Error updating order status: {str(e)}')
         return jsonify({'status': 'error', 'message': str(e)})
 
 @app.route('/admin/logout')
@@ -1428,6 +1695,152 @@ def terms():
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+
+@app.route('/test_email')
+@login_required
+def test_email():
+    try:
+        msg = Message(
+            subject='Test - Verify Your PureLuxe Account',
+            recipients=[current_user.email],
+            sender='support@pure-luxe.shop'
+        )
+        msg.html = render_template(
+            'email/verify_email.html',
+            user=current_user,
+            verification_url='http://example.com/verify',
+            now=datetime.now()
+        )
+        
+        mail.send(msg)
+        return 'Verification email sent successfully!'
+    except Exception as e:
+        app.logger.error(f'Error sending test email: {str(e)}')
+        return f'Error sending email: {str(e)}'
+
+@app.route('/check_verification_status')
+def check_verification_status():
+    email = session.get('verification_email')
+    if not email:
+        return jsonify({'verified': False})
+    
+    user = User.query.filter_by(email=email).first()
+    if user and user.verified:
+        # Clear the verification email from session
+        session.pop('verification_email', None)
+        # Log the user in
+        login_user(user)
+        return jsonify({'verified': True})
+    
+    return jsonify({'verified': False})
+
+# Add OAuth token storage model
+class OAuth(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    provider = db.Column(db.String(50), nullable=False)
+    provider_user_id = db.Column(db.String(256), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    token = db.Column(db.JSON, nullable=False)
+
+# Add after app configuration
+app.config['GOOGLE_OAUTH_CLIENT_ID'] = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
+app.config['GOOGLE_OAUTH_CLIENT_SECRET'] = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET')
+
+# Create Google OAuth blueprint
+google_bp = make_google_blueprint(
+    client_id=app.config['GOOGLE_OAUTH_CLIENT_ID'],
+    client_secret=app.config['GOOGLE_OAUTH_CLIENT_SECRET'],
+    scope=['https://www.googleapis.com/auth/userinfo.email',
+           'https://www.googleapis.com/auth/userinfo.profile',
+           'openid'],
+    offline=True,
+    reprompt_consent=True,
+    storage=SQLAlchemyStorage(OAuth, db.session, user=current_user)
+)
+
+# Register the blueprint with a URL prefix
+app.register_blueprint(google_bp, url_prefix='/login')
+
+# Configure session for OAuth
+app.config.update(
+    SESSION_COOKIE_SECURE=False,  # Set to True in production
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    PERMANENT_SESSION_LIFETIME=1800,  # 30 minutes
+    SESSION_TYPE='filesystem'
+)
+
+# Handle Google OAuth login
+@oauth_authorized.connect_via(google_bp)
+def google_logged_in(blueprint, token):
+    if not token:
+        flash("Failed to log in with Google.", "error")
+        return False
+
+    try:
+        resp = blueprint.session.get("https://www.googleapis.com/oauth2/v3/userinfo")
+        if not resp.ok:
+            flash("Failed to fetch user info from Google.", "error")
+            return False
+
+        google_info = resp.json()
+        google_user_id = str(google_info["sub"])  # Google uses 'sub' as the user ID
+        email = google_info.get("email")
+
+        if not email:
+            flash("Failed to get email from Google.", "error")
+            return False
+
+        # First, try to find existing user
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            # Create a new user
+            user = User(
+                email=email,
+                first_name=google_info.get("given_name", ""),
+                last_name=google_info.get("family_name", ""),
+                verified=True  # Google users are automatically verified
+            )
+            # Set a random password
+            password = secrets.token_urlsafe(16)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.flush()  # This will assign an ID to the user
+
+        # Now find or create the OAuth record
+        oauth = OAuth.query.filter_by(
+            provider="google",
+            provider_user_id=google_user_id
+        ).first()
+
+        if not oauth:
+            oauth = OAuth(
+                provider="google",
+                provider_user_id=google_user_id,
+                token=token,
+                user_id=user.id
+            )
+            db.session.add(oauth)
+        else:
+            oauth.token = token
+
+        db.session.commit()
+        login_user(user)
+        flash("Successfully signed in with Google.", "success")
+        return False  # Disable Flask-Dance's default behavior
+
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error in Google OAuth callback: {str(e)}")
+        flash("An error occurred during Google sign in.", "error")
+        return False
+
+# Add Google login route
+@app.route('/login/google')
+def google_login():
+    if not google.authorized:
+        return redirect(url_for('google.login'))
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     with app.app_context():
