@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "version": 2,
   "builds": [
@@ -26,20 +25,4 @@
     "FLASK_DEBUG": "0",
     "DATABASE_URL": "sqlite:///shop.db"
   }
-=======
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "wsgi.py"
-    }
-  ]
->>>>>>> aa099d00179ff03bb3a88093808ebbf6055da78d
 } 
