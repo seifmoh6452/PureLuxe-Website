@@ -13,19 +13,19 @@ class Config:
 
     # Database
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///shop.db')
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_size': 10,
         'pool_recycle': 3600,
         'pool_pre_ping': True,
-        'pool_timeout': 30,
-        'max_overflow': 5,
-        'echo': False,
-        'connect_args': {
-            'check_same_thread': False  # For SQLite
-        }
+        'echo': False
     }
 
+    # For SQLite specifically
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('sqlite:'):
+        SQLALCHEMY_ENGINE_OPTIONS['connect_args'] = {'check_same_thread': False}
+    
     # Mail
     MAIL_SERVER = 'smtp.zoho.com'
     MAIL_PORT = 587

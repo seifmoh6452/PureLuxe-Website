@@ -1,3 +1,32 @@
+<<<<<<< HEAD
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "wsgi.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "wsgi.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production",
+    "FLASK_DEBUG": "0",
+    "DATABASE_URL": "sqlite:///shop.db"
+  }
+=======
 {
   "version": 2,
   "builds": [
@@ -12,4 +41,5 @@
       "dest": "wsgi.py"
     }
   ]
+>>>>>>> aa099d00179ff03bb3a88093808ebbf6055da78d
 } 
