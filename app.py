@@ -49,12 +49,6 @@ def inject_csrf_token():
     return dict(csrf_token=lambda: csrf._get_token())
 
 # Configure logging
-log_dir = 'logs'
-log_file = os.path.join(log_dir, 'pureluxe.log')
-
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
-
 # Remove any existing handlers to avoid duplicates
 for handler in logging.getLogger().handlers[:]:
     logging.getLogger().removeHandler(handler)
@@ -66,44 +60,13 @@ console_handler.setFormatter(logging.Formatter(
 ))
 console_handler.setLevel(logging.INFO)
 
-# Configure root logger first with just console logging
+# Configure root logger with just console logging
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger().addHandler(console_handler)
 
-try:
-    # Configure file handler with proper permissions
-    file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=1024 * 1024,  # 1MB
-        backupCount=10,
-        delay=True,  # Delay file creation until first write
-        encoding='utf-8'
-    )
-    file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-    ))
-    file_handler.setLevel(logging.INFO)
-
-    # Add file handler to root logger
-    logging.getLogger().addHandler(file_handler)
-
-    # Configure Flask app logger
-    app.logger.handlers = []  # Remove any existing handlers
-    app.logger.propagate = True  # Use root logger handlers
-    
-except Exception as e:
-    logging.warning(f"Could not set up file logging: {e}")
-
-# Register cleanup function
-def cleanup_handlers():
-    for handler in logging.getLogger().handlers[:]:
-        try:
-            handler.close()
-        except:
-            pass
-        logging.getLogger().removeHandler(handler)
-
-atexit.register(cleanup_handlers)
+# Configure Flask app logger
+app.logger.handlers = []  # Remove any existing handlers
+app.logger.propagate = True  # Use root logger handlers
 
 app.logger.info('PureLuxe startup')
 
