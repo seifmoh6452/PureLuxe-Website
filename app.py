@@ -122,22 +122,25 @@ TRANSLATIONS = {
         'Cart': 'Cart',
         'Search': 'Search',
         
-        # Ramadan Theme
-        'Welcome to Our Ramadan Collection': 'Welcome to Our Ramadan Collection',
-        'Discover our special Ramadan collection of natural care products, perfect for your self-care routine during the blessed month': 'Discover our special Ramadan collection of natural care products, perfect for your self-care routine during the blessed month',
-        'Shop Ramadan Collection': 'Shop Ramadan Collection',
+        # Page Titles
+        'PureLuxe - Pure ingredients, luxurious feel': 'PureLuxe - Pure ingredients, luxurious feel',
+        
+        # Home Page
+        'Experience Pure Luxury for Your': 'Experience Pure Luxury for Your',
+        'Hair & Skin': 'Hair & Skin',
+        'Indulge in our premium formula that combines pure, natural ingredients with luxurious results': 'Indulge in our premium formula that combines pure, natural ingredients with luxurious results',
+        'Shop Collection': 'Shop Collection',
         'Special Offers': 'Special Offers',
         'Days': 'Days',
         'Hours': 'Hours',
         'Minutes': 'Minutes',
         'Seconds': 'Seconds',
-        'Just 4 Days Until The Blessed Month!': 'Just 4 Days Until The Blessed Month!',
-        'Prepare for your spiritual journey with our special Ramadan collection': 'Prepare for your spiritual journey with our special Ramadan collection',
+        'Discover our exclusive deals and packages for luxury hair and skin care': 'Discover our exclusive deals and packages for luxury hair and skin care',
         
         # Special Offers Section
         'Special Ramadan Offers': 'Special Ramadan Offers',
         'Celebrate this blessed month with our exclusive Ramadan deals and packages': 'Celebrate this blessed month with our exclusive Ramadan deals and packages',
-        'Ramadan Gift Sets': 'Ramadan Gift Sets',
+        'Luxury Gift Sets': 'Luxury Gift Sets',
         'Special gift packages perfect for Iftar gatherings and Eid celebrations': 'Special gift packages perfect for Iftar gatherings and Eid celebrations',
         'Special Discounts': 'Special Discounts',
         'Enjoy up to 30% off on selected products throughout Ramadan': 'Enjoy up to 30% off on selected products throughout Ramadan',
@@ -184,6 +187,8 @@ TRANSLATIONS = {
         'Size': 'Size',
         'Description': 'Description',
         'Related Products': 'Related Products',
+        'Luxury Hair & Skin Collection': 'Luxury Hair & Skin Collection',
+        'Discover our premium range of natural products designed to nourish and enhance your hair and skin': 'Discover our premium range of natural products designed to nourish and enhance your hair and skin',
 
         # Shopping Cart
         'Shopping Cart': 'Shopping Cart',
@@ -391,25 +396,24 @@ TRANSLATIONS = {
         'Cart': 'عربة التسوق',
         'Search': 'بحث',
         
-        # Ramadan Theme
-        'Welcome to Our Ramadan Collection': 'مرحباً بكم في مجموعة رمضان',
-        'Discover our special Ramadan collection of natural care products, perfect for your self-care routine during the blessed month': 'اكتشف مجموعتنا الخاصة من منتجات العناية الطبيعية لرمضان، مثالية لروتين العناية الخاص بك خلال الشهر الفضيل',
-        'Shop Ramadan Collection': 'تسوق مجموعة رمضان',
+        # Page Titles
+        'PureLuxe - Pure ingredients, luxurious feel': 'بيور لوكس - مكونات نقية، ملمس فاخر',
+        
+        # Home Page
+        'Experience Pure Luxury for Your': 'استمتع بالفخامة النقية لـ',
+        'Hair & Skin': 'شعرك وبشرتك',
+        'Indulge in our premium formula that combines pure, natural ingredients with luxurious results': 'دلل نفسك بتركيبتنا المميزة التي تجمع بين المكونات الطبيعية النقية والنتائج الفاخرة',
+        'Shop Collection': 'تسوق المجموعة',
         'Special Offers': 'عروض خاصة',
         'Days': 'أيام',
         'Hours': 'ساعات',
         'Minutes': 'دقائق',
         'Seconds': 'ثواني',
-        'Just 4 Days Until The Blessed Month!': 'باقي ٤ أيام على الشهر الفضيل!',
-        'Prepare for your spiritual journey with our special Ramadan collection': 'استعد لرحلتك الروحانية مع مجموعتنا الخاصة لرمضان',
-        
-        # Special Offers Section
-        'Special Ramadan Offers': 'عروض رمضان المميزة',
-        'Celebrate this blessed month with our exclusive Ramadan deals and packages': 'احتفل بهذا الشهر المبارك مع عروضنا وباقاتنا الحصرية لرمضان',
-        'Ramadan Gift Sets': 'أطقم هدايا رمضان',
-        'Special gift packages perfect for Iftar gatherings and Eid celebrations': 'باقات هدايا مميزة مثالية لتجمعات الإفطار واحتفالات العيد',
+        'Discover our exclusive deals and packages for luxury hair and skin care': 'اكتشف صفقاتنا وباقاتنا الحصرية للعناية الفاخرة بالشعر والبشرة',
+        'Luxury Gift Sets': 'مجموعات هدايا فاخرة',
+        'Special gift packages perfect for treating yourself or someone special': 'باقات هدايا خاصة مثالية لتدليل نفسك أو شخص مميز',
         'Special Discounts': 'خصومات خاصة',
-        'Enjoy up to 30% off on selected products throughout Ramadan': 'استمتع بخصم يصل إلى ٣٠٪ على منتجات مختارة طوال شهر رمضان',
+        'Enjoy up to 30% off on selected premium products': 'استمتع بخصم يصل إلى ٣٠٪ على منتجات مختارة فاخرة',
         'Free Gift Wrapping': 'تغليف هدايا مجاني',
         'Complimentary luxury gift wrapping service for all orders': 'خدمة تغليف هدايا فاخرة مجانية لجميع الطلبات',
         
@@ -453,6 +457,8 @@ TRANSLATIONS = {
         'Size': 'الحجم',
         'Description': 'الوصف',
         'Related Products': 'منتجات ذات صلة',
+        'Luxury Hair & Skin Collection': 'مجموعة فاخرة للشعر والبشرة',
+        'Discover our premium range of natural products designed to nourish and enhance your hair and skin': 'اكتشف مجموعتنا الفاخرة من المنتجات الطبيعية المصممة لتغذية وتعزيز شعرك وبشرتك',
 
         # Shopping Cart
         'Shopping Cart': 'عربة التسوق',
@@ -1756,6 +1762,7 @@ def google_logged_in(blueprint, token):
 
         # First, try to find existing user
         user = User.query.filter_by(email=email).first()
+        
         if not user:
             # Create a new user
             user = User(
@@ -1768,7 +1775,7 @@ def google_logged_in(blueprint, token):
             password = secrets.token_urlsafe(16)
             user.set_password(password)
             db.session.add(user)
-            db.session.flush()  # This will assign an ID to the user
+            db.session.commit()  # Commit to get the user ID
 
         # Now find or create the OAuth record
         oauth = OAuth.query.filter_by(
@@ -1781,13 +1788,14 @@ def google_logged_in(blueprint, token):
                 provider="google",
                 provider_user_id=google_user_id,
                 token=token,
-                user_id=user.id
+                user_id=user.id  # Now we have the user.id
             )
             db.session.add(oauth)
+            db.session.commit()
         else:
             oauth.token = token
+            db.session.commit()
 
-        db.session.commit()
         login_user(user)
         flash("Successfully signed in with Google.", "success")
         return False  # Disable Flask-Dance's default behavior
